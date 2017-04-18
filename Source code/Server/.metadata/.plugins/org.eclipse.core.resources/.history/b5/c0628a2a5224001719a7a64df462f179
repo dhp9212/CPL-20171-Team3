@@ -1,0 +1,20 @@
+import org.eclipse.californium.core.CoapClient;
+
+public class CoapAccept
+{
+    public static void main( String[] args )
+    {
+        System.out.println( "Hello! This is CoAP Sample Application." );
+
+        CoapClient client = new CoapClient("coap://californium.eclipse.org:5683/obs");
+
+        if(!client.ping()){
+            System.out.println("Server is down. Terminate program.");
+            return;
+        }
+
+        System.out.println("Request Get mothod of CoAP.");
+        String content1 = client.get().getResponseText();
+        System.out.println("Response : " + content1);
+    }
+}
