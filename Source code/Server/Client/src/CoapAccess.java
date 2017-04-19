@@ -56,13 +56,13 @@ public class CoapAccess {
 	 static boolean loop = false; 
 
 	/* method  : GET or PUT
-	 * url     : IP address and port of server
+	 * uri     : Uniform Resource Identifier, IP address and port of server
 	 * payload : Contents
 	 */
-	public CoapAccess(String method, String url, String payload) throws IOException, GeneralSecurityException{
+	public CoapAccess(String method, String uri, String payload) throws IOException, GeneralSecurityException{
 		
 		Request request = newRequest(method);
-		request.setURI(url); 	
+		request.setURI(uri); 	
 		request.setPayload(payload); 
 		request.getOptions().setContentFormat(MediaTypeRegistry.TEXT_PLAIN); 
 		
@@ -80,15 +80,14 @@ public class CoapAccess {
 		   EndpointManager.getEndpointManager().setDefaultSecureEndpoint(dtlsEndpoint); 
 		}
 		
+		processRequest(request);
 	}
 	
 	public void processRequest(Request request){
 		
 		try{
 			request.send();
-			
 			do{
-				
 				Response response = null;
 				
 				try{

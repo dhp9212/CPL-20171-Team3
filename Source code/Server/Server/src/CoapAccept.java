@@ -24,7 +24,7 @@ public class CoapAccept extends CoapServer{
 			server.addEndpoints();
 			server.start();
 		}
-		catch(Exception e){
+		catch(SocketException e){
 			System.err.println("Failed to initialize server : " + e.getMessage());
 		}
 	}
@@ -51,19 +51,49 @@ public class CoapAccept extends CoapServer{
 	class Resource extends CoapResource{
 		
 		public Resource(){
-			super("Server_Resource");
+			//identifier
+			super("Server");
+			getAttributes().setTitle("CoAP Server");
 		}
 		
 		@Override
 		public void handleGET(CoapExchange exchange){
 			// when server receive "GET" message from client
 			// GET means pull from client to server
+			
+			byte[] payload = exchange.getRequestPayload();
+			
+			try{
+				String message = new String(payload, "UTF-8");
+				/**/
+				System.out.println(message);
+				/**/
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+
+			exchange.respond("Success connection");
 		}
 		
 		@Override
 		public void handlePUT(CoapExchange exchange){
 			// when server receive "PUT" message from client
 			// PUT means push from server to client
+			
+			byte[] payload = exchange.getRequestPayload();
+			
+			try{
+				String message = new String(payload, "UTF-8");
+				/**/
+				System.out.println(message);
+				/**/
+				exchange.respond("OK");
+				
+			}catch(Exception e){
+				e.printStackTrace();
+				exchange.respond(BAD_REQUEST, "Invalid Payload");
+			}
+			
 		}
 	}
 	
