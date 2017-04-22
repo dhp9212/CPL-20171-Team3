@@ -5,17 +5,24 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 public class WifiServer {
 	 public static final int ServerPort = 5000;
-	 public static final String ServerIP = "118.41.247.153"; 
+	 public static final String ServerIP = "14.46.3.105"; 
 	 
-	 public static final String REQUEST_DATA = "1";
-	 public static final String REQUEST_CONTROL = "2";
-	 public static final String COLSE = "3";
+	 public static final String REQUEST_CURRENT_TEMP = "1";
+	 public static final String REQUEST_ACCRUE_TEMP = "2";
+	 public static final String REQUEST_HUM = "3";
+	 public static final String REQUEST_CONTROL = "4";
+	 public static final String REQUEST_SIGNUP = "5";
+	 public static final String COLSE = "6";
 	 
 	 private ServerSocket serverSocket = null;
 	 Socket client = null;
+	 
+	 static String id;
+	 static String password;
 	 
 	 public WifiServer() throws IOException
 	 {
@@ -62,19 +69,66 @@ public class WifiServer {
 	            {  
 	            	String data = new String(buff, 0, n, "UTF-8"); 
 	            	
-	            	if(data.equals(REQUEST_DATA))
+	            	String[] dataArray = new String[3];
+	            	StringTokenizer str = new StringTokenizer(data, "/");
+	            	int countTokens = str.countTokens();
+	            	
+	            	for(int i = 0; i < countTokens; i++)
 	            	{
-	            		System.out.println("Client's request : data");
+	            		dataArray[i] = str.nextToken();
+	            	}
+	            	
+	            	if(dataArray[0].equals(REQUEST_CURRENT_TEMP))
+	            	{
+	            		System.out.println("Client's request : current temp");
 	                    	
-	                    String response = "30";
+	                    String response = "30/24";//hotzone current temp/coolzone current temp
 	                    System.out.println("Sending response :" + response);
 	                    
 	                    wfOut.write(response.getBytes("UTF-8"));
 	                    wfOut.flush();
 	                }
-	            	else if(data.equals(REQUEST_CONTROL))
+	            	else if(dataArray[0].equals(REQUEST_ACCRUE_TEMP))
+	            	{
+	            		System.out.println("Client's request : accrue temp");
+                    	
+	                    String response = "30/29/28/30/31/32/28/30/24/25/26/25/24/25/23/22";
+	                    //hotzone temp(-21 hour)/hotzone temp(-16 hour)/.../hotzone temp(-0 hour) : 8 temps
+	                    //coolzone temp(-21 hour)/coolzone temp(-16 hour)/.../coolzone temp(-0 hour) : 8 temps
+	                    //total : 16 temps
+	                    System.out.println("Sending response :" + response);
+	                    
+	                    wfOut.write(response.getBytes("UTF-8"));
+	                    wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(REQUEST_HUM))
+	            	{
+	            		System.out.println("Client's request : humidity");
+                    	
+	                    String response = "40/37";
+	                    //current humidity/average humidity
+	                    System.out.println("Sending response :" + response);
+	                    
+	                    wfOut.write(response.getBytes("UTF-8"));
+	                    wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(REQUEST_CONTROL))
 	            	{
 	            		System.out.println("Client's request : control");
+	            		
+	            		String response = "ok";
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	                }
+	            	else if(dataArray[0].equals(REQUEST_SIGNUP))
+	            	{
+	            		System.out.println("Client's request : signup");
+	            		
+	            		id = dataArray[1];
+	            		password = dataArray[2];
+	            		//signup
 	            		
 	            		String response = "ok";
 	            		System.out.println("Sending response :" + response);
