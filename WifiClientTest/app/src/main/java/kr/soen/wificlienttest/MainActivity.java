@@ -3,11 +3,10 @@ package kr.soen.wificlienttest;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.TabLayout;
@@ -24,15 +23,10 @@ import android.view.MenuItem;
 
 import android.widget.Toast;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.StringTokenizer;
-
 public class MainActivity extends AppCompatActivity {
-
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
+    SharedPreferences pref;
+    SectionsPagerAdapter mSectionsPagerAdapter;
+    ViewPager mViewPager;
 
     BackPressCloseHandler backPressCloseHandler;
 
@@ -43,29 +37,6 @@ public class MainActivity extends AppCompatActivity {
     WRhandler handler;
 
     Toast logMsg;
-
-    boolean isConnect = false;
-    String taskString;
-
-    public static final int ServerPort = 5000;
-    public static final String ServerIP = "118.41.247.153";
-
-    Socket socket;
-
-    public InputStream mmInStream;
-    public OutputStream mmOutStream;
-
-    public static final String REQUEST_All_DATA = "1";
-    public static final String REQUEST_CURRENT_TEMP = "2";
-    public static final String REQUEST_ACCRUE_TEMP = "3";
-    public static final String REQUEST_HUM = "4";
-    public static final String REQUEST_CONTROL = "5";
-    public static final String COLSE = "6";
-
-    Temp1Fragment temp1Fragment;
-    HumFragment humFragment;
-    ControlFragment controlFragment;
-
 
 
 
@@ -81,23 +52,24 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(3);
+        //mViewPager.setOffscreenPageLimit(3);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         backPressCloseHandler = new BackPressCloseHandler(this);//뒤로가기 handler
 
+        pref = getSharedPreferences("pref", MODE_PRIVATE);
+        if (pref.getBoolean("isfirst", true))
+        {
+            logMessege("환경설정에서 계정을 등록하세요.");
+        }
+
         wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         filter = new IntentFilter();
         filter.addAction(wifiManager.WIFI_STATE_CHANGED_ACTION);
         registerReceiver(WifiRecv, filter);
-
-        if (wifiManager.isWifiEnabled())
-        {
-            //doCommu(REQUEST_All_DATA);
-        }
     }
 
     BroadcastReceiver WifiRecv = new BroadcastReceiver() {
@@ -133,155 +105,34 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     logMessege("WiFi가 비활성화 되었습니다.");
                     dialog.show();
-                    temp1Fragment.wifiState(wifiManager.isWifiEnabled());
-                    controlFragment.wifiState(wifiManager.isWifiEnabled());
                     break;
 
                 case 2:
                     logMessege("WiFi가 활성화되었습니다.");
-                    temp1Fragment.wifiState(wifiManager.isWifiEnabled());
-                    controlFragment.wifiState(wifiManager.isWifiEnabled());
                     break;
             }
         }
     }
-
-    public void doCommu(String msg) {
-        new CommuTask().execute(msg);//통신 쓰레드 시작
-    }
-
-    public void doClose() {
-        new CloseTask().execute();//종료쓰레드 시작
-    }
-
-    private class CommuTask extends AsyncTask<String, String, Object> {
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                if(!isConnect) {
-                    socket = new Socket(ServerIP, ServerPort);
-                    isConnect =true;
-                }
-
-                mmOutStream = socket.getOutputStream();
-                mmInStream = socket.getInputStream();
-
-                taskString = params[0];
-
-                mmOutStream.write(taskString.getBytes("UTF-8"));
-                mmOutStream.flush();
-
-                byte[] inbuff = new byte[1024];
-                clearArray(inbuff);//buffer clear
-                int len;
-                len = mmInStream.read(inbuff);
-
-                return new String(inbuff, 0, len, "UTF-8");
-            } catch (Throwable t) {
-                doClose();
-                return t.toString();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Object result) {
-            if (result instanceof Exception) {
-                logMessege(result.toString());
-            } else {
-                doSetResultText(result.toString());
-            }
-        }
-    }
-
-    public void doSetResultText(String text) {
-        if(taskString.equals(REQUEST_All_DATA))
-        {
-
-        }
-        else if (taskString.equals(REQUEST_CURRENT_TEMP))
-        {
-            float[] current_tempTokens = new float[2];
-
-            StringTokenizer str = new StringTokenizer(text, "/");
-
-            int countTokens = str.countTokens();
-
-            for (int i = 0; i < countTokens; i++)
-            {
-                current_tempTokens[i] = Float.parseFloat(str.nextToken());
-            }
-
-            temp1Fragment.setChartData(current_tempTokens[0], current_tempTokens[1]);
-        }
-        else if (taskString.equals(REQUEST_ACCRUE_TEMP))
-        {
-
-        }
-        else if (taskString.equals(REQUEST_HUM))
-        {
-            String[] dataTokens = new String[2];
-
-            StringTokenizer str = new StringTokenizer(text, "/");
-
-            int countTokens = str.countTokens();
-
-            for (int i = 0; i < countTokens; i++)
-            {
-                dataTokens[i] = str.nextToken();
-            }
-
-            humFragment.setTextView(dataTokens[0], dataTokens[1]);
-        }
-        else if(taskString.equals(REQUEST_CONTROL))
-        {
-            logMessege(text);
-        }
-    }
-
-    private class CloseTask extends AsyncTask<Void, Void, Object> {
-        @Override
-        protected Object doInBackground(Void... params) {
-            try {
-                mmOutStream.write(COLSE.getBytes("UTF-8"));
-                mmOutStream.flush();
-
-                try{mmOutStream.close();}catch(Throwable t){/*ignore*/}
-                try{mmInStream.close();}catch(Throwable t){/*ignore*/}
-                socket.close();
-            } catch (Throwable t) {
-                return t;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object result) {
-            if (result instanceof Throwable) {
-                logMessege(result.toString());
-            } else {
-                isConnect = false;
-            }
-        }
-    }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id)
+        {
+            case R.id.action_settings:
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -293,13 +144,13 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return Temp1Fragment.newInstance(wifiManager.isWifiEnabled());
+                    return new Temp1Fragment();
                 case 1:
-                    return Temp2Fragment.newInstance(position + 1);
+                    return new Temp2Fragment();
                 case 2:
-                    return HumFragment.newInstance(position + 1);
+                    return new HumFragment();
                 case 3:
-                    return ControlFragment.newInstance(wifiManager.isWifiEnabled());
+                    return new ControlFragment();
             }
             return null;
         }
@@ -325,8 +176,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     public void onBackPressed() {
         backPressCloseHandler.onBackPressed();
@@ -337,21 +186,14 @@ public class MainActivity extends AppCompatActivity {
         logMsg.show();
     }
 
-    public void clearArray(byte[] buff) {
-        for (int i = 0; i < buff.length; i++)
-        {
-            buff[i] = 0;
-        }
-    }
-
     @Override
     public void onDestroy()
     {
         super.onDestroy();
 
-        if(isConnect) {
-            doClose();
-        }
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("isfirst", false);
+        editor.commit();
 
         unregisterReceiver(WifiRecv);
     }

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="kr.soen.wificlienttest.SignupActivity">
+    
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:columnCount="2">
+
+        <TextView
+            android:layout_gravity="right"
+            android:padding="8dp"
+            android:text="ID"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+
+        <EditText
+            android:id="@+id/id"
+            android:layout_width="220dp" />
+
+        <TextView
+            android:layout_gravity="right"
+            android:padding="8dp"
+            android:text="PASSWORD"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="220dp"
+            android:maxLength="4"
+            android:inputType="numberPassword" />
+    </GridLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:text="위의 PASSWORD는 잠금설정 시 적용되는 PASSWORD입니다."
+        android:textSize="10sp"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/signup_btn"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:layout_marginEnd="16dp"
+            android:textSize="15sp"
+            android:text="계정등록"/>
+        <Button
+            android:id="@+id/ok_btn"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:layout_marginStart="16dp"
+            android:textSize="15sp"
+            android:text="확인"/>
+
+    </LinearLayout>
+</LinearLayout>
