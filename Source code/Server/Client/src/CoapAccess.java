@@ -121,6 +121,8 @@ public class CoapAccess {
 		}
 		
 	}
+	
+
  
  
 	private static Request newRequest(String method) { 

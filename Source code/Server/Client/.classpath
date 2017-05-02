@@ -16,5 +16,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/Schule/final_project/CPL-20162-Team3/Arduino/rxtx-2.2pre2-bins/RXTXcomm.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
