@@ -25,7 +25,7 @@ import org.eclipse.californium.core.network.Endpoint;
 import org.eclipse.californium.core.network.EndpointManager; 
 import org.eclipse.californium.core.network.config.NetworkConfig; 
 
-public class CoapAccess {
+public class ModuleCoapSend {
 
 	
 	// the trust store file used for DTLS server authentication 
@@ -59,7 +59,7 @@ public class CoapAccess {
 	 * uri     : Uniform Resource Identifier, IP address and port of server
 	 * payload : Contents
 	 */
-	public CoapAccess(String method, String uri, String payload) throws IOException, GeneralSecurityException{
+	public ModuleCoapSend(String method, String uri, String payload) throws IOException, GeneralSecurityException{
 		
 		Request request = newRequest(method);
 		request.setURI(uri); 	
@@ -121,10 +121,7 @@ public class CoapAccess {
 		}
 		
 	}
-	
 
- 
- 
 	private static Request newRequest(String method) { 
 		  if (method.equals("GET")) { 
 		   return Request.newGet(); 

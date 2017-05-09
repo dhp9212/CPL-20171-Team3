@@ -14,12 +14,9 @@ import org.eclipse.californium.core.network.config.NetworkConfig;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 
-public class CoapAccept extends CoapServer{
+public class ModuleCoapServer extends CoapServer{
 	
 	private static final int COAP_PORT = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
-	
-	
-	
 	
 	public void addEndpoints(){
 		for(InetAddress addr : EndpointManager.getEndpointManager().getNetworkInterfaces()){
@@ -35,7 +32,7 @@ public class CoapAccept extends CoapServer{
 	}
 	
 	// constructor
-	public CoapAccept() throws SocketException{
+	public ModuleCoapServer() throws SocketException{
 		add(new Resource());
 	}
 	
@@ -43,7 +40,7 @@ public class CoapAccept extends CoapServer{
 		
 		public Resource(){
 			//identifier
-			super("Server");
+			super("Module");
 			getAttributes().setTitle("CoAP Server");
 		}
 		

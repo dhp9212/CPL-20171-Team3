@@ -10,11 +10,11 @@ import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.coap.Request;
 import org.eclipse.californium.core.coap.Response;
 
-public class AppAccept {
+public class PlatformMain {
 	 public static final int ServerPort = 5000;
 	 public static final String ServerIP = "192.168.10.102"; 
 	 
-	 public static final String REQUEST_CURRENT_TEMP = "1";
+	 public static final String REQUEST_CURRENT_TEMP_HUM = "1";
 	 public static final String REQUEST_ACCRUE_TEMP = "2";
 	 public static final String REQUEST_HUM = "3";
 	 public static final String REQUEST_CONTROL = "4";
@@ -22,8 +22,9 @@ public class AppAccept {
 	 public static final String COLSE = "6";
 	 
 	 
-	 private static String method = "";
-	 private static String uri = "";
+	 private static String method = "PUT";
+	 private static String uri = "coap://192.168.10.102:5683/Module";
+	 //private static String uri = "coap://54.71.172.224:5683/Platform"; // pi address
 	 private static String payload = "";
 	 
 	 private ServerSocket serverSocket = null;
@@ -32,7 +33,7 @@ public class AppAccept {
 	 static String id;
 	 static String password;
 	 
-	 public AppAccept() throws IOException
+	 public PlatformMain() throws IOException
 	 {
 		 System.out.println("Server : Start");
 		 serverSocket = new ServerSocket(ServerPort);
@@ -73,7 +74,7 @@ public class AppAccept {
 	            clearArray(buff);
 	            int n;
 	            
-	            DbAccess db = new DbAccess();
+	            Database db = new Database();
 	            
 	            while ((n = wfIn.read(buff)) > 0) 
 	            {  
@@ -89,15 +90,11 @@ public class AppAccept {
 	            	}
 	            	
 	            	// GET Current Temperature from Server
-	            	if(dataArray[0].equals(REQUEST_CURRENT_TEMP))
+	            	if(dataArray[0].equals(REQUEST_CURRENT_TEMP_HUM))
 	            	{
-	            		System.out.println("Client's request : current temp");
-	            		
-	            		// TODO: modifiy  just select from DB
-	            		// select
-	            		db.test();
-	            		
-	                    String response = "30/24";//hotzone current temp/coolzone current temp
+	            		System.out.println("Client's request : current temp and humidity");
+	                    	
+	                    String response = "30/24/40/37";//hotzone current temp/coolzone current temp/current humidity/average humidity
 	                    System.out.println("Sending response :" + response);
 	                    
 	                    wfOut.write(response.getBytes("UTF-8"));
@@ -135,13 +132,16 @@ public class AppAccept {
 	                    wfOut.write(response.getBytes("UTF-8"));
 	                    wfOut.flush();
 	            	}
+	            	
+	            	
+	            	//////////////////////////////////////////////////////////////
 	            	else if(dataArray[0].equals(REQUEST_CONTROL))
 	            	{
 	            		System.out.println("Client's request : control");
 	            		
 	            		// TODO: modifiy 
 	            		// insert
-	            		
+	            		payload = "Control packet";
 	            		Request request = createRequest(method, uri, payload);
 	            		processRequest(request);
 	            		
@@ -205,6 +205,7 @@ public class AppAccept {
 			 ret = Request.newGet();
 		 else if(method.equals("PUT"))
 			 ret = Request.newPut();
+		 
 		 ret.setURI(uri);
 		 ret.setPayload(payload);
 		 
@@ -267,15 +268,20 @@ public class AppAccept {
 
 	 public static void main(String[] args){
 			try{
-				CoapAccept server = new CoapAccept();
+				PlatformCoapServer server = new PlatformCoapServer();
 				server.addEndpoints();
 				server.start();
 				
-				AppAccept wifiServer = new AppAccept();
+				// Server에서 라즈베리 패킷을 받는거는 된다,
+				// 주는 걸 테스트 해봐야되는데 앱으로 동작시킬 필요가 있다.
+				// 앱에 Fix IP를 AWS IP로 바꿔서 올려서 테스트 해야함.
+        		
+				PlatformMain wifiServer = new PlatformMain();
 				while (true) {
-					AppAccept.Session session = wifiServer.accept();  
+					PlatformMain.Session session = wifiServer.accept();  
 		            new Thread(session).start(); 
 				}
+
 			}
 			catch(Exception e){
 				System.err.println("Failed to initialize server : " + e.getMessage());

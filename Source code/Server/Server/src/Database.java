@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import javax.net.ssl.SSLContext;
 
 
-public class DbAccess {
+public class Database {
 
 	
 	 public static final String REQUEST_CURRENT_TEMP = "1";
@@ -28,7 +28,7 @@ public class DbAccess {
 	Statement state;
 	String query = "";
 	
-	public DbAccess(){
+	public Database(){
 		try{
 			con = DriverManager.getConnection(url + dbName, userName, password);
 			state = con.createStatement();

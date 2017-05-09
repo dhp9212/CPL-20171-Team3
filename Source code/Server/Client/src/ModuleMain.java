@@ -1,17 +1,16 @@
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
-
-//사용 예제를 위한 import
-import java.util.Scanner;
-
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
+//사용 예제를 위한 import
+import java.util.Scanner;
  
-public class RaspAccess implements SerialPortEventListener {
+public class ModuleMain implements SerialPortEventListener {
  
     SerialPort serialPort;
  
@@ -35,8 +34,8 @@ public class RaspAccess implements SerialPortEventListener {
     
     // for CoAP
     private static String method = "PUT";
-    private static String uri = "coap://54.71.172.224:5683/Server";
-    //private String url = "coap://192.168.10.100/ServerResource";
+    private static String uri = "coap://192.168.10.102:5683/Platform";
+    //private static String uri = "coap://54.71.172.224:5683/Platform";
     private static String payload = "Rasp에서 가는 packet";
  
     public void initialize() { 
@@ -59,9 +58,6 @@ public class RaspAccess implements SerialPortEventListener {
             } 
         }
         
-        
-        
-        
         if (portId == null) { 
             System.out.println("Could not find COM port."); 
             return; 
@@ -80,9 +76,7 @@ public class RaspAccess implements SerialPortEventListener {
          
             serialPort.addEventListener(this); 
             serialPort.notifyOnDataAvailable(true);
- 
-            
-            
+
         } catch (Exception e) { 
             System.err.println(e.toString()); 
         } 
@@ -104,7 +98,7 @@ public class RaspAccess implements SerialPortEventListener {
                 
                 payload = new String(chunk);
                 
-                CoapAccess coap = new CoapAccess(method, uri, payload);
+                ModuleCoapSend coap = new ModuleCoapSend(method, uri, payload);
                 //통신받은걸 아두이노로 전송
                 //System.out.println(new String(chunk));
                 //output.write(chunk);
@@ -137,11 +131,23 @@ public class RaspAccess implements SerialPortEventListener {
     
     public static void main(String[] args) throws Exception {
        
-        RaspAccess main = new RaspAccess(); 
-        main.initialize(); 
+        ModuleMain main = new ModuleMain(); 
+        //main.initialize(); 
         System.out.println("Started"); 
-        CoapAccess coap = new CoapAccess(method, uri, payload);
+        
+        /* 같은 ip로는 테스트가 안된다.
+         * 향후에 라즈베리파이에 올려서 테스트 예정
+        ModuleCoapServer server = new ModuleCoapServer();
+        server.addEndpoints();
+        server.start();
+        */
+        ModuleCoapSend coap = new ModuleCoapSend(method, uri, payload);
         
         //main.testing();
+        
+        /*while (true) {
+        	main.Session session = main.accept();  
+	        new Thread(session).start(); 
+		}*/
     } 
 }
