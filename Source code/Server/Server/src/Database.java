@@ -1,22 +1,20 @@
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Logger;
-
-import javax.net.ssl.SSLContext;
 
 
 public class Database {
 
 	
-	 public static final String REQUEST_CURRENT_TEMP = "1";
+	 public static final String REQUEST_CURRENT_TEMP_HUM = "1";
 	 public static final String REQUEST_ACCRUE_TEMP = "2";
-	 public static final String REQUEST_HUM = "3";
-	 public static final String REQUEST_CONTROL = "4";
-	 public static final String REQUEST_SIGNUP = "5";
-	 public static final String COLSE = "6";
+	 public static final String REQUEST_CONTROL = "3";
+	 public static final String REQUEST_SIGNUP = "4";
+	 public static final String COLSE = "5";
+	 
 	
 	private String url = "jdbc:mysql://dhdb.cvqwpznjcq93.us-west-2.rds.amazonaws.com:3306/";
 	private String userName = "DH";
@@ -27,11 +25,15 @@ public class Database {
 	Connection con;
 	Statement state;
 	String query = "";
+	CallableStatement procedure;
 	
 	public Database(){
 		try{
 			con = DriverManager.getConnection(url + dbName, userName, password);
 			state = con.createStatement();
+			procedure = con.prepareCall("CALL mysql.store_time_zone");
+			procedure.execute();
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -40,8 +42,6 @@ public class Database {
 	public void test(){
 		try{
 
-			
-			
 			query = "SELECT * FROM ACCOUNT";
 			
 			ResultSet result = state.executeQuery(query);
@@ -58,19 +58,55 @@ public class Database {
 		
 	}
 	
-	public void select(){
+	public ResultSet select(String flag, String payload){
 		
+		ResultSet result = null;
+		String[] splt = payload.split("/");
+		
+		if(flag.equals(REQUEST_CURRENT_TEMP_HUM)){
+			
+		}
+		else if(flag.equals(REQUEST_ACCRUE_TEMP)){
+			
+		}
+		
+		return result;
 	}
 	
-	public void insert(String code){
-		if(code.equals(REQUEST_CONTROL)){
-			query = "INSERT INTO CONTROL VALUES('ON')";
-			try{
-				state.executeUpdate(query);
-			}catch(Exception e){
-				e.printStackTrace();
+
+	public void insert(String flag, String payload){
+		
+		String[] splt = payload.split("/");
+		
+		if(flag.equals(REQUEST_CONTROL)){
+			query = "INSERT INTO CONTROL_LOG VALUES(";
+			for(int i = 0; i < splt.length; i++){
+				query += "'" + splt[i] + "'";
+				if(i+1 != splt.length)
+					query += ", ";
 			}
+			query += ", now()";
+			query += ");";		
 		}
+		else if(flag.equals(REQUEST_SIGNUP)){
+			query = "INSERT INTO ACCOUNT VALUES(";
+			for(int i = 0; i < splt.length; i++){
+				query += "'" + splt[i] + "'";
+				if(i+1 != splt.length)
+					query += ", ";
+			}
+			query += ", now()"; // 현재 서버가 북미에 있기 때문에 북미 시간으로 들어간다. 프로시저 콜으로 될듯
+			query += ");";			 	 
+		}
+		
+		System.out.println(query);
+		
+		try{
+			state.executeUpdate(query);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void modify(){

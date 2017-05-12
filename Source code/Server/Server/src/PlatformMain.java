@@ -16,10 +16,9 @@ public class PlatformMain {
 	 
 	 public static final String REQUEST_CURRENT_TEMP_HUM = "1";
 	 public static final String REQUEST_ACCRUE_TEMP = "2";
-	 public static final String REQUEST_HUM = "3";
-	 public static final String REQUEST_CONTROL = "4";
-	 public static final String REQUEST_SIGNUP = "5";
-	 public static final String COLSE = "6";
+	 public static final String REQUEST_CONTROL = "3";
+	 public static final String REQUEST_SIGNUP = "4";
+	 public static final String COLSE = "5";
 	 
 	 
 	 private static String method = "PUT";
@@ -106,7 +105,7 @@ public class PlatformMain {
                     	
 	            		// TODO: modifiy  just select from DB
 	            		// select
-	            		db.test();
+	            		
 	            		
 	                    String response = "30/29/28/30/31/32/28/30/24/25/26/25/24/25/23/22";
 	                    //hotzone temp(-21 hour)/hotzone temp(-16 hour)/.../hotzone temp(-0 hour) : 8 temps
@@ -117,23 +116,7 @@ public class PlatformMain {
 	                    wfOut.write(response.getBytes("UTF-8"));
 	                    wfOut.flush();
 	            	}
-	            	else if(dataArray[0].equals(REQUEST_HUM))
-	            	{
-	            		System.out.println("Client's request : humidity");
-                    	
-	            		// TODO: modifiy just select from DB
-	            		// select
-	            		db.test();
-	            		
-	                    String response = "40/37";
-	                    //current humidity/average humidity
-	                    System.out.println("Sending response :" + response);
-	                    
-	                    wfOut.write(response.getBytes("UTF-8"));
-	                    wfOut.flush();
-	            	}
-	            	
-	            	
+
 	            	//////////////////////////////////////////////////////////////
 	            	else if(dataArray[0].equals(REQUEST_CONTROL))
 	            	{
@@ -141,12 +124,14 @@ public class PlatformMain {
 	            		
 	            		// TODO: modifiy 
 	            		// insert
-	            		payload = "Control packet";
+	            		payload = "Control packet";/*
 	            		Request request = createRequest(method, uri, payload);
 	            		processRequest(request);
+	            		*/
 	            		
+	            		db.insert(REQUEST_CONTROL, "APP_LIGHT_ON00000");
 	            		
-	            		String response = "ok";
+	            		String response = "Accepted";
 	            		System.out.println("Sending response :" + response);
 	            		wfOut.write(response.getBytes("UTF-8"));  
 		                wfOut.flush();
@@ -154,16 +139,13 @@ public class PlatformMain {
 	            	else if(dataArray[0].equals(REQUEST_SIGNUP))
 	            	{
 	            		System.out.println("Client's request : signup");
-	            		
-	            		// TODO: modifiy 
-	            		// insert
-	            		db.test();
-	            		
+	            		          		
 	            		id = dataArray[1];
 	            		password = dataArray[2];
 	            		//signup
+	            		db.insert(REQUEST_SIGNUP, id + "/" + password);
 	            		
-	            		String response = "ok";
+	            		String response = "Accepted";
 	            		System.out.println("Sending response :" + response);
 	            		
 	            		wfOut.write(response.getBytes("UTF-8"));  
