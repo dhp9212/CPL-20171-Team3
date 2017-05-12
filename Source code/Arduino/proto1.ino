@@ -114,7 +114,7 @@ void printT2(lm35 t){
   // 4: 음수부호와 소수점을 포함한 전체 자리수
   // 1: 소수점을 제외한 소수점 자리수
   dtostrf(t.TempInCelcius,4,1,tempt2);
-  sprintf(temp,"%s_%s_%s:%s@",ID,TEMP,"TOW",tempt2);
+  sprintf(temp,"%s_%s_%s:%s@",ID,TEMP,"TWO",tempt2);
   Serial.write(temp);
   Serial.flush();
 }
