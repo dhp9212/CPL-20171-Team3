@@ -3,12 +3,14 @@ package kr.soen.wifiapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class SettingActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
     public static final int REQUEST_ID_AND_PASSWORD = 1;
@@ -16,6 +18,8 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
 
     SharedPreferences pref;
     WifiManager wifiManager;
+
+    TextView title;
 
     ListView listview ;
     ListViewAdapter adapter;
@@ -27,6 +31,9 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
 
         wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         pref = getSharedPreferences("pref", MODE_PRIVATE);
+
+        title = (TextView)findViewById(R.id.text3);
+        title.setTypeface(Typeface.createFromAsset(getAssets(), "NanumBarunpenR.ttf"));
 
         // Adapter 생성
         adapter = new ListViewAdapter() ;
@@ -119,7 +126,7 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putString("id", id);
                 editor.putString("password", password);
-                editor.apply();
+                editor.commit();
             }
         }
     }

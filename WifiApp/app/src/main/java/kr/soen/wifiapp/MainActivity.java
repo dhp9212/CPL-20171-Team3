@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -13,14 +14,11 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,16 +30,18 @@ import java.net.Socket;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     public static final int ServerPort = 5000;
     public static final String ServerIP = "54.71.172.224 ";
-    //public static final String ServerIP = "118.41.247.141";
+    //public static final String ServerIP = "14.46.3.32";
 
     public static final String REQUEST_CURRENT_TEMP_HUM = "1";
     public static final String REQUEST_ACCRUE_TEMP = "2";
-    public static final String REQUEST_CONTROL = "3";
+    public static final String REQUEST_STATE = "3";
+    public static final String COLSE = "5";
 
     Socket socket;
     public InputStream mmInStream;
     public OutputStream mmOutStream;
     String taskString;
+    boolean isconnect = false;
 
     ViewPager vp;
     LinearLayout ll;
@@ -55,9 +55,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Toast logMsg;
 
     Object result;
+    Object result_s;
 
     String currentTempHumData = "0/0/0/0";
     String accrueTempData = "0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0";
+    String stateData = "0/0/0/0/0/0/0/0";
+
+    String issuccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +79,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(!pref.getString("id", "").equals(""))
         {
             doCommu(REQUEST_ACCRUE_TEMP);
+            doCommu(REQUEST_STATE);
         }
 
         vp = (ViewPager)findViewById(R.id.vp);
         ll = (LinearLayout)findViewById(R.id.ll);
 
         TextView currenttemphumTab = (TextView)findViewById(R.id.tab_current_temp_hum);
+        currenttemphumTab.setTypeface(Typeface.createFromAsset(getAssets(), "NanumBarunpenR.ttf"));
         TextView accruetempTab = (TextView)findViewById(R.id.tab_accrue_temp);
+        accruetempTab.setTypeface(Typeface.createFromAsset(getAssets(), "NanumBarunpenR.ttf"));
         TextView controlTab = (TextView)findViewById(R.id.tab_control);
+        controlTab.setTypeface(Typeface.createFromAsset(getAssets(), "NanumBarunpenR.ttf"));
 
         vp.setAdapter(new pagerAdapter(getSupportFragmentManager()));
         vp.setCurrentItem(0);
@@ -122,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
+
+        ImageButton settingBtn = (ImageButton)findViewById(R.id.setting_btn);
+        settingBtn.setOnClickListener(this);
 
         backPressCloseHandler = new BackPressCloseHandler(this);//뒤로가기 handler
 
@@ -191,8 +202,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case REQUEST_ACCRUE_TEMP:
                         accrueTempData = result.toString();
                         break;
-                    case REQUEST_CONTROL:
-                        logMessege(result.toString());
+                    case REQUEST_STATE:
+                        stateData = result.toString();
                         break;
                 }
 
@@ -203,13 +214,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public void doCommuForState(String msg)
+    {
+        try {
+            result_s = new CommuTask().execute(msg).get();
+
+            if (result_s instanceof Exception)
+            {
+                logMessege(result_s.toString());
+                issuccess = "F";
+            }
+            else
+            {
+                issuccess = result_s.toString();
+            }
+        } catch (Exception e)
+        {
+            logMessege(e.toString());
+            issuccess = "F";
+        }
+    }
+
+    public void doClose()
+    {
+        new CloseTask().execute(COLSE);
+    }
+
     private class CommuTask extends AsyncTask<String, String, Object> {
         @Override
         protected String doInBackground(String... params) {
             try {
                 taskString = params[0];
 
-                socket = new Socket(ServerIP, ServerPort);
+                if (!isconnect)
+                {
+                    socket = new Socket(ServerIP, ServerPort);
+                    isconnect = true;
+                }
+
                 mmInStream = socket.getInputStream();
                 mmOutStream = socket.getOutputStream();
 
@@ -223,12 +265,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 return new String(inbuff, 0, len, "UTF-8");
             } catch (Throwable t) {
-                return t.toString();
+               return t.toString();
             }
         }
 
         @Override
         protected void onPostExecute(Object result) { }
+    }
+
+    private class CloseTask extends AsyncTask<String, String, Object> {
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                taskString = params[0];
+
+                mmOutStream.write(taskString.getBytes("UTF-8"));
+                mmOutStream.flush();
+
+                mmInStream.close();
+                mmOutStream.close();
+                socket.close();
+
+                String result = "S";
+
+                return result;
+            } catch (Throwable t) {
+                return t.toString();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {}
     }
 
     public void clearArray(byte[] buff) {
@@ -241,25 +308,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v)
     {
-        int tag = (int)v.getTag();
-
-        int i = 0;
-        while(i < 3)
+        if(v.getId() == R.id.setting_btn)
         {
-            if(tag == i)
-            {
-                ll.findViewWithTag(i).setSelected(true);
-            }
-            else
-            {
-                ll.findViewWithTag(i).setSelected(false);
-            }
-            i++;
+            Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+            startActivity(intent);
         }
+        else
+        {
+            int tag = (int)v.getTag();
 
-        vp.setCurrentItem(tag);
+            int i = 0;
+            while(i < 3)
+            {
+                if(tag == i)
+                {
+                    ll.findViewWithTag(i).setSelected(true);
+                }
+                else
+                {
+                    ll.findViewWithTag(i).setSelected(false);
+                }
+                i++;
+            }
+
+            vp.setCurrentItem(tag);
+        }
     }
-
 
     private class pagerAdapter extends FragmentStatePagerAdapter
     {
@@ -290,26 +364,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id)
-        {
-            case R.id.action_settings:
-                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
-                startActivity(intent);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onBackPressed() {
         backPressCloseHandler.onBackPressed();
     }
@@ -323,6 +377,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onDestroy()
     {
         super.onDestroy();
+
+        if (isconnect)
+        {
+            doClose();
+        }
 
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean("isfirst", false);

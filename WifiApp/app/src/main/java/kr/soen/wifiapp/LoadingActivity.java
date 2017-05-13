@@ -28,6 +28,8 @@ public class LoadingActivity extends AppCompatActivity {
 
         pref = getSharedPreferences("pref", MODE_PRIVATE);
 
+        //startLoading();
+
         if (wifiManager.isWifiEnabled())
         {
             startLoading();//로딩화면 2초 동안 출력

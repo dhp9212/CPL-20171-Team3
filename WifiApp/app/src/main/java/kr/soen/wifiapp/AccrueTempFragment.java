@@ -1,11 +1,13 @@
 package kr.soen.wifiapp;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -26,6 +28,7 @@ public class AccrueTempFragment extends Fragment {
     float[] hot_accrue_tempTokens = new float[8];
     float[] cool_accrue_tempTokens = new float[8];
 
+    TextView chartTitle;
     LineChart accruetempChart;
     LineData accruetempData;
 
@@ -43,16 +46,23 @@ public class AccrueTempFragment extends Fragment {
     {
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.fragment_accrue_temp, container, false);
 
+        chartTitle = (TextView)layout.findViewById(R.id.line_chart_title) ;
+        chartTitle.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
+
         accruetempChart = (LineChart) layout.findViewById(R.id.accrue_temp_chart);
         accruetempChart.getAxisLeft().setEnabled(false);
         accruetempChart.getAxisRight().setEnabled(false);
         accruetempChart.getAxisLeft().setAxisMaximum(36);
         accruetempChart.getAxisLeft().setAxisMinimum(20);
         accruetempChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        accruetempChart.getXAxis().setTextSize(11);
+        accruetempChart.getXAxis().setTextColor(getResources().getColor(R.color.white));
+        accruetempChart.getXAxis().setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
         accruetempChart.getDescription().setEnabled(false);
         accruetempChart.setTouchEnabled(false);
         accruetempChart.setDragEnabled(false);
         accruetempChart.setScaleEnabled(false);
+        accruetempChart.getLegend().setEnabled(false);
 
         setGraphData(hot_accrue_tempTokens, cool_accrue_tempTokens);
 
@@ -113,6 +123,8 @@ public class AccrueTempFragment extends Fragment {
         tempDataSet.add(coolzoneDataSet);
 
         accruetempData = new LineData(tempDataSet);
+        accruetempData.setValueTextColor(getResources().getColor(R.color.white));
+        accruetempData.setValueTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
         accruetempChart.setData(accruetempData);
 
         long now = System.currentTimeMillis();
@@ -142,6 +154,7 @@ public class AccrueTempFragment extends Fragment {
 
         accruetempChart.getXAxis().setValueFormatter(formatter);
         accruetempChart.getXAxis().removeAllLimitLines();
+
         accruetempChart.animateX(2000);
     }
 }
