@@ -74,8 +74,9 @@ public class Database {
 	}
 	
 
-	public void insert(String flag, String payload){
+	public String insert(String flag, String payload){
 		
+		String ret = "";
 		String[] splt = payload.split("/");
 		
 		if(flag.equals(REQUEST_CONTROL)){
@@ -103,10 +104,13 @@ public class Database {
 		
 		try{
 			state.executeUpdate(query);
+			ret = "S";
 		}catch(Exception e){
 			e.printStackTrace();
+			ret = "F";
 		}
 		
+		return ret;
 	}
 	
 	public void modify(){

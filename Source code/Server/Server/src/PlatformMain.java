@@ -11,18 +11,35 @@ import org.eclipse.californium.core.coap.Request;
 import org.eclipse.californium.core.coap.Response;
 
 public class PlatformMain {
-	 public static final int ServerPort = 5000;
-	 public static final String ServerIP = "192.168.10.102"; 
+	public static final int ServerPort = 5000;
+	 public static final String ServerIP = "54.71.172.224"; 
 	 
 	 public static final String REQUEST_CURRENT_TEMP_HUM = "1";
 	 public static final String REQUEST_ACCRUE_TEMP = "2";
-	 public static final String REQUEST_CONTROL = "3";
+	 public static final String REQUEST_STATE = "3";
 	 public static final String REQUEST_SIGNUP = "4";
 	 public static final String COLSE = "5";
 	 
+	 public static final String APP_LIGHT_ON = "10";
+	 public static final String APP_LIGHT_OF = "11";
+    public static final String APP_LIGHT_AU = "12";
+
+    public static final String APP_HITTE_ON = "20";
+	 public static final String APP_HITTE_OF = "21";
+	 public static final String APP_HITTE_AU = "22";
+
+	 public static final String APP_HUMID_ON = "30";
+	 public static final String APP_HUMID_OF = "31";
+	 public static final String APP_HUMID_AU = "32";
+
+	 public static final String APP_MOTOR_LE = "40";
+	 public static final String APP_MOTOR_RI = "41";
+	 public static final String APP_MOTOR_OF = "42";
+	 
 	 
 	 private static String method = "PUT";
-	 private static String uri = "coap://192.168.10.102:5683/Module";
+	 private static String uri = "coap://27.35.109.109:5683/Module";
+	 //private static String uri = "coap://192.168.10.102:5683/Module";
 	 //private static String uri = "coap://54.71.172.224:5683/Platform"; // pi address
 	 private static String payload = "";
 	 
@@ -118,21 +135,17 @@ public class PlatformMain {
 	            	}
 
 	            	//////////////////////////////////////////////////////////////
-	            	else if(dataArray[0].equals(REQUEST_CONTROL))
+	            	else if(dataArray[0].equals(REQUEST_STATE))
 	            	{
-	            		System.out.println("Client's request : control");
+	            		System.out.println("Client's request : state");
 	            		
-	            		// TODO: modifiy 
-	            		// insert
-	            		payload = "Control packet";/*
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
-	            		*/
-	            		
-	            		db.insert(REQUEST_CONTROL, "APP_LIGHT_ON00000");
-	            		
-	            		String response = "Accepted";
+	            		String response = "0/0/0/0/0/0/0/0";
+	            		//light : on -> 1, off -> 0/auto on -> 1, auto off -> 0
+	            		//hitter : on -> 1, off -> 0/auto on -> 1, auto off -> 0
+	            		//humidifier : on -> 1, off -> 0/auto on -> 1, auto off -> 0
+	            		//motor : left -> 1, right -> 0/on -> 1, off -> 0
 	            		System.out.println("Sending response :" + response);
+	            		
 	            		wfOut.write(response.getBytes("UTF-8"));  
 		                wfOut.flush();
 	                }
@@ -143,14 +156,150 @@ public class PlatformMain {
 	            		id = dataArray[1];
 	            		password = dataArray[2];
 	            		//signup
-	            		db.insert(REQUEST_SIGNUP, id + "/" + password);
-	            		
-	            		String response = "Accepted";
+
+	            		String response = db.insert(REQUEST_SIGNUP, id + "/" + password);
 	            		System.out.println("Sending response :" + response);
 	            		
 	            		wfOut.write(response.getBytes("UTF-8"));  
 		                wfOut.flush();
 	                }
+	            	else if(dataArray[0].equals(APP_LIGHT_ON))
+	            	{
+	            		System.out.println("Client's request : lightOn");
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_LIGHT_OF))
+	            	{
+	            		System.out.println("Client's request : lightOFF");
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_LIGHT_AU))
+	            	{
+	            		System.out.println("Client's request : lightAuto");
+	            		
+	            		//if state is 0 in DB, change state to 1
+	            		//if state is 1 in DB, change state to 0
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_HITTE_ON))
+	            	{
+	            		System.out.println("Client's request : hitterOn");
+	            		
+	            		
+	            		payload = "Server에서 Rasp로 가는 packet";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_HITTE_OF))
+	            	{
+	            		System.out.println("Client's request : hitterOFF");
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_HITTE_AU))
+	            	{
+	            		System.out.println("Client's request : hitterAuto");
+	            		
+	            		//if state is 0 in DB, change state to 1
+	            		//if state is 1 in DB, change state to 0
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_HUMID_ON))
+	            	{
+	            		System.out.println("Client's request : humidifierOn");
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_HUMID_OF))
+	            	{
+	            		System.out.println("Client's request : humidifierOFF");
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_HUMID_AU))
+	            	{
+	            		System.out.println("Client's request : humidifierAuto");
+	            		
+	            		//if state is 0 in DB, change state to 1
+	            		//if state is 1 in DB, change state to 0
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_MOTOR_LE))
+	            	{
+	            		System.out.println("Client's request : humidifierOn");
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_MOTOR_RI))
+	            	{
+	            		System.out.println("Client's request : humidifierOFF");
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
+	            	else if(dataArray[0].equals(APP_MOTOR_OF))
+	            	{
+	            		System.out.println("Client's request : humidifierAuto");
+	            		
+	            		//if state is 0 in DB, change state to 1
+	            		//if state is 1 in DB, change state to 0
+	            		
+	            		String response = "S";//failed : F
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	            	}
 	            	else if (data.equals(COLSE))
 					{
 	            		break;
@@ -263,7 +412,6 @@ public class PlatformMain {
 					PlatformMain.Session session = wifiServer.accept();  
 		            new Thread(session).start(); 
 				}
-
 			}
 			catch(Exception e){
 				System.err.println("Failed to initialize server : " + e.getMessage());
