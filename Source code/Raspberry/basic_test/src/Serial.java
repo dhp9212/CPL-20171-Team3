@@ -14,7 +14,7 @@ import gnu.io.SerialPortEventListener;
 public class Serial implements SerialPortEventListener {
  
     SerialPort serialPort;
- 
+    String readString="";
     private static final String PORT_NAMES[] = {   
           "/dev/tty.usbserial-A9007UX1",//MAX OS X
           "/dev/ttyACM0" ,//Linux
@@ -95,20 +95,64 @@ public class Serial implements SerialPortEventListener {
         } 
     }
 
+    // string 만드는 함수
+    public void makeSerial(String data){
+    	//스트링의 처음을 구분
+    	if(readString.length() == 0){
+    		if(data.substring(0,1).equals("R")){
+    			String[] array = data.split("@");
+    			readString = readString + array[0];
+        		
+        		if(array.length >1){
+        			int i = 1;
+        			while(true){
+        			System.out.println(readString);
+        			readString="";
+            		readString=readString + array[i++];
+            		if( i == array.length)
+            			break;
+        			}
+        		}
+    		}
+    	}
+    	//스트링 구분자 "@"
+    	else{
+    		String[] array = data.split("@");
+    		readString = readString + array[0];
+    		if(array.length >1){
+    			int i = 1;
+    			while(true){
+    			System.out.println(readString);
+    			readString="";
+        		readString=readString + array[i++];
+        		if( i == array.length)
+        			break;
+    			}
+    		}
+    	}
+    	//스트링 길이 17
+    	if(readString.length() >= 17){
+    		System.out.println(readString);
+    		readString="";
+    	}
+    }
+    
+    
     public synchronized void serialEvent(SerialPortEvent oEvent) { 
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) { 
             try { 
                 int available = input.available();
                 byte chunk[] = new byte[available]; 
-                input.read(chunk, 0, available); 
-                
+                input.read(chunk, 0, available);
+                //test 용
+                //아두이노가 넘겨준걸 프린트함
+                //System.out.println(">> " + new String(chunk));      	
+                makeSerial(new String(chunk));
+            
                 //통신받은걸 아두이노로 전송
                 //System.out.println(new String(chunk));
                 //output.write(chunk);
            
-                //test 용
-                //아두이노로 넘겨준걸 프린트함
-                System.out.println(">> " + new String(chunk));
                 
             } catch (Exception e) { 
                 System.err.println(e.toString()); 

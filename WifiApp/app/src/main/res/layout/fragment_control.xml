@@ -2,20 +2,158 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white"
+    android:background="#00000000"
     >
 
-    <Button
-        android:id="@+id/control_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="15sp"
-        android:text="제어"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:textSize="16sp"
+                android:text="전등"
+                android:textColor="@color/black"/>
+
+            <Button
+                android:id="@+id/light_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@color/white"
+                android:textColor="@color/gray"
+                android:textSize="15sp"
+                android:text="OFF"/>
+
+            <Button
+                android:id="@+id/light_btn_auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@color/white"
+                android:textColor="@color/gray"
+                android:textSize="15sp"
+                android:text="AUTO"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:textSize="16sp"
+                android:text="히터"
+                android:textColor="@color/black"/>
+
+            <Button
+                android:id="@+id/hitter_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@color/white"
+                android:textColor="@color/gray"
+                android:textSize="15sp"
+                android:text="OFF"/>
+
+            <Button
+                android:id="@+id/hitter_btn_auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@color/white"
+                android:textColor="@color/gray"
+                android:textSize="15sp"
+                android:text="AUTO"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:textSize="16sp"
+                android:text="가습"
+                android:textColor="@color/black"/>
+
+            <Button
+                android:id="@+id/hum_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@color/white"
+                android:textColor="@color/gray"
+                android:textSize="15sp"
+                android:text="OFF"/>
+
+            <Button
+                android:id="@+id/hum_btn_auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@color/white"
+                android:textColor="@color/gray"
+                android:textSize="15sp"
+                android:text="AUTO"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:textSize="16sp"
+                android:text="모터"
+                android:textColor="@color/black"/>
+
+            <Button
+                android:id="@+id/motor_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@color/white"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15sp"
+                android:text="RIGHT"/>
+
+            <Button
+                android:id="@+id/motor_btn_power"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@color/white"
+                android:textColor="@color/gray"
+                android:textSize="15sp"
+                android:text="OFF"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

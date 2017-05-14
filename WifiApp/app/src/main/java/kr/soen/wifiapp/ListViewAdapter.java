@@ -1,5 +1,6 @@
 package kr.soen.wifiapp;
 
+import android.graphics.Typeface;
 import android.widget.BaseAdapter;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -37,7 +38,9 @@ public class ListViewAdapter extends BaseAdapter {
 
         // 화면에 표시될 View(Layout이 inflate된)으로부터 위젯에 대한 참조 획득
         TextView titleTextView = (TextView) convertView.findViewById(R.id.textView1) ;
+        titleTextView.setTypeface(Typeface.createFromAsset(convertView.getContext().getAssets(), "NanumBarunpenR.ttf"));
         TextView descTextView = (TextView) convertView.findViewById(R.id.textView2) ;
+        descTextView.setTypeface(Typeface.createFromAsset(convertView.getContext().getAssets(), "NanumBarunpenR.ttf"));
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
         ListViewItem listViewItem = listViewItemList.get(position);

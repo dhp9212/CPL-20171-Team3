@@ -3,12 +3,14 @@ package kr.soen.wifiapp;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,9 +34,11 @@ public class TempHumFragment extends Fragment {
     float[] current_temp = new float[2];
     int[] hum = new int[2];
 
+    TextView chartTitle;
     BarChart currenttempChart;
     BarData currenttempData;
 
+    TextView seekTitle1, seekTitle2;
     SeekArc currenthum;
     SeekArc avghum;
     TextView currenthumProgress;
@@ -69,28 +73,43 @@ public class TempHumFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.fragment_temp_hum, container, false);
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_temp_hum, container, false);
+
+        chartTitle = (TextView)layout.findViewById(R.id.bar_chart_title) ;
+        chartTitle.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
 
         currenttempChart = (BarChart) layout.findViewById(R.id.current_temp_chart);
         currenttempChart.getAxisLeft().setEnabled(false);
         currenttempChart.getAxisRight().setEnabled(false);
         currenttempChart.getAxisLeft().setAxisMaximum(36);
         currenttempChart.getAxisLeft().setAxisMinimum(20);
+        currenttempChart.getXAxis().setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
+        currenttempChart.getXAxis().setTextSize(16);
+        currenttempChart.getXAxis().setTextColor(getResources().getColor(R.color.white));
         currenttempChart.getDescription().setEnabled(false);
         currenttempChart.setTouchEnabled(false);
         currenttempChart.setDragEnabled(false);
         currenttempChart.setScaleEnabled(false);
         currenttempChart.getLegend().setEnabled(false);
 
+
+        seekTitle1 = (TextView)layout.findViewById(R.id.seek_title1);
+        seekTitle1.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
+
         currenthum = (SeekArc)layout.findViewById(R.id.currenthumseekArc);
         currenthumProgress = (TextView)layout.findViewById(R.id.currenthumseekArcProgress);
-        currenthum.setProgressWidth(30);
-        currenthum.setArcWidth(30);
+        currenthumProgress.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
+        currenthum.setProgressWidth(15);
+        currenthum.setArcWidth(15);
+
+        seekTitle2 = (TextView)layout.findViewById(R.id.seek_title2);
+        seekTitle2.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
 
         avghum = (SeekArc)layout.findViewById(R.id.avghumseekArc);
         avghumProgress = (TextView)layout.findViewById(R.id.avghumseekArcProgress);
-        avghum.setProgressWidth(30);
-        avghum.setArcWidth(30);
+        avghumProgress.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
+        avghum.setProgressWidth(15);
+        avghum.setArcWidth(15);
 
         setGraphData(current_temp[0], current_temp[1], hum[0], hum[1]);
 
@@ -143,6 +162,9 @@ public class TempHumFragment extends Fragment {
         currenttempDataSet.setValueTextSize(15);
 
         currenttempData = new BarData(currenttempDataSet);
+        currenttempData.setValueTextColor(getResources().getColor(R.color.white));
+        currenttempData.setValueTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
+        currenttempData.setBarWidth(0.6f);
         currenttempChart.setData(currenttempData);
 
         final String[] xAxis = new String[] {"Hot Zone", "Cool Zone"};
