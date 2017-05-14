@@ -167,6 +167,10 @@ public class PlatformMain {
 	            	{
 	            		System.out.println("Client's request : lightOn");
 	            		
+	            		payload = "APP_LIGHT_ON00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
+	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
 	            		
@@ -177,6 +181,10 @@ public class PlatformMain {
 	            	{
 	            		System.out.println("Client's request : lightOFF");
 	            		
+	            		payload = "APP_LIGHT_OF00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
+	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
 	            		
@@ -186,6 +194,10 @@ public class PlatformMain {
 	            	else if(dataArray[0].equals(APP_LIGHT_AU))
 	            	{
 	            		System.out.println("Client's request : lightAuto");
+	            		
+	            		payload = "APP_LIGHT_AU00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -200,8 +212,7 @@ public class PlatformMain {
 	            	{
 	            		System.out.println("Client's request : hitterOn");
 	            		
-	            		
-	            		payload = "Server에서 Rasp로 가는 packet";
+	            		payload = "APP_HITTE_ON00000";
 	            		Request request = createRequest(method, uri, payload);
 	            		processRequest(request);
 	            		
@@ -215,6 +226,10 @@ public class PlatformMain {
 	            	{
 	            		System.out.println("Client's request : hitterOFF");
 	            		
+	            		payload = "APP_HITTE_OF00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
+	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
 	            		
@@ -224,6 +239,10 @@ public class PlatformMain {
 	            	else if(dataArray[0].equals(APP_HITTE_AU))
 	            	{
 	            		System.out.println("Client's request : hitterAuto");
+	            		
+	            		payload = "APP_HITTE_AU00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -238,6 +257,10 @@ public class PlatformMain {
 	            	{
 	            		System.out.println("Client's request : humidifierOn");
 	            		
+	            		payload = "APP_HUMID_ON00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
+	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
 	            		
@@ -248,6 +271,10 @@ public class PlatformMain {
 	            	{
 	            		System.out.println("Client's request : humidifierOFF");
 	            		
+	            		payload = "APP_HUMID_OF00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
+	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
 	            		
@@ -257,6 +284,10 @@ public class PlatformMain {
 	            	else if(dataArray[0].equals(APP_HUMID_AU))
 	            	{
 	            		System.out.println("Client's request : humidifierAuto");
+	            		
+	            		payload = "APP_HUMID_AU00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -271,6 +302,11 @@ public class PlatformMain {
 	            	{
 	            		System.out.println("Client's request : humidifierOn");
 	            		
+	            		
+	            		payload = "APP_MOTOR_LE00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
+	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
 	            		
@@ -281,6 +317,10 @@ public class PlatformMain {
 	            	{
 	            		System.out.println("Client's request : humidifierOFF");
 	            		
+	            		payload = "APP_MOTOR_RI00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
+	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
 	            		
@@ -290,6 +330,10 @@ public class PlatformMain {
 	            	else if(dataArray[0].equals(APP_MOTOR_OF))
 	            	{
 	            		System.out.println("Client's request : humidifierAuto");
+	            		
+	            		payload = "APP_MOTOR_OF00000";
+	            		Request request = createRequest(method, uri, payload);
+	            		processRequest(request);
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
