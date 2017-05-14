@@ -7,10 +7,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#30FFFFFF"
         android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -23,17 +24,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
+                android:layout_gravity="center_vertical"
                 android:textSize="16sp"
                 android:text="전등"
-                android:textColor="@color/black"/>
+                android:textColor="@color/white"/>
 
             <ImageButton
                 android:id="@+id/light_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@color/white"
-                android:textColor="@color/gray"
+                android:layout_gravity="center_vertical"
+                android:background="#00000000"
+                android:src="@drawable/uv_off_button_state"
                 android:textSize="15sp"
                 android:text="OFF"/>
 
@@ -42,7 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:background="@color/white"
+                android:layout_gravity="center_vertical"
+                android:background="#00000000"
                 android:textColor="@color/gray"
                 android:textSize="15sp"
                 android:text="AUTO"/>
@@ -59,16 +63,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
+                android:layout_gravity="center_vertical"
                 android:textSize="16sp"
                 android:text="히터"
-                android:textColor="@color/black"/>
+                android:textColor="@color/white"/>
 
             <ImageButton
                 android:id="@+id/hitter_btn"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 android:layout_marginEnd="8dp"
+                android:layout_gravity="center_vertical"
+                android:background="#00000000"
                 android:src="@drawable/heat_off_button_state"
                 android:textColor="@color/gray"
                 android:textSize="15sp"
@@ -79,7 +86,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:background="@color/white"
+                android:layout_gravity="center_vertical"
+                android:background="#00000000"
                 android:textColor="@color/gray"
                 android:textSize="15sp"
                 android:text="AUTO"/>
@@ -96,15 +104,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
+                android:layout_gravity="center_vertical"
                 android:textSize="16sp"
                 android:text="가습"
-                android:textColor="@color/black"/>
+                android:textColor="@color/white"/>
 
             <ImageButton
                 android:id="@+id/hum_btn"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
+                android:background="#00000000"
                 android:src="@drawable/hum_off_button_state"
                 android:textColor="@color/gray"
                 android:textSize="15sp"
@@ -115,7 +127,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:background="@color/white"
+                android:layout_gravity="center_vertical"
+                android:background="#00000000"
                 android:textColor="@color/gray"
                 android:textSize="15sp"
                 android:text="AUTO"/>
@@ -134,14 +147,15 @@
                 android:layout_marginEnd="32dp"
                 android:textSize="16sp"
                 android:text="모터"
-                android:textColor="@color/black"/>
+                android:textColor="@color/white"/>
 
             <ImageButton
                 android:id="@+id/motor_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@color/white"
+                android:layout_gravity="center_vertical"
+                android:background="#00000000"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp"
                 android:text="RIGHT"/>
@@ -151,11 +165,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:background="@color/white"
+                android:layout_gravity="center_vertical"
+                android:background="#00000000"
                 android:textColor="@color/gray"
                 android:textSize="15sp"
                 android:text="OFF"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/web_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/white"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:text="웹뷰"/>
 
     </LinearLayout>
 

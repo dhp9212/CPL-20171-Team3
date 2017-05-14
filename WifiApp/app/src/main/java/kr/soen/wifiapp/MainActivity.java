@@ -1,6 +1,5 @@
 package kr.soen.wifiapp;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -40,10 +39,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String COLSE = "5";
 
     Socket socket;
-    public InputStream mmInStream=null;
-    public OutputStream mmOutStream=null;
+    public InputStream mmInStream = null;
+    public OutputStream mmOutStream = null;
     String taskString;
-    boolean isconnect = false;
+    boolean isConnect = false;
+    boolean isFirstControlConnect = true;
 
     ViewPager vp;
     LinearLayout ll;
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String accrueTempData = "0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0";
     String stateData = "0/0/0/0/0/0/0/0";
 
-    String issuccess;
+    String isSuccess;
 
 
     @Override
@@ -77,13 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (pref.getBoolean("isfirst", true))
         {
             logMessege("환경설정에서 계정을 등록하세요.");
-        }
-
-        if(!pref.getString("id", "").equals(""))
-        {
-            Log.d("SOCKET","서버 연결 요청 _ MAIN");
-            doCommu(REQUEST_ACCRUE_TEMP);
-            doCommu(REQUEST_STATE);
         }
 
         vp = (ViewPager)findViewById(R.id.vp);
@@ -190,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void doCommu(String msg)
     {
         try {
-            //Log.d("SOCKET","서버 연결 시도 _ MAIN");
             result = new CommuTask().execute(msg).get();
 
             if (result instanceof Exception)
@@ -227,16 +219,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (result_s instanceof Exception)
             {
                 logMessege(result_s.toString());
-                issuccess = "F";
+                isSuccess = "F";
             }
             else
             {
-                issuccess = result_s.toString();
+                isSuccess = result_s.toString();
             }
         } catch (Exception e)
         {
             logMessege(e.toString());
-            issuccess = "F";
+            isSuccess = "F";
         }
     }
 
@@ -251,12 +243,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 taskString = params[0];
 
-                if (isconnect == false)
+                if (!isConnect)
                 {
                     socket = new Socket(ServerIP, ServerPort);
                     Log.d("SOCKET", "서버 연결 요청 _ MAIN 소켓 생성");
-                    isconnect = true;
+                    isConnect = true;
                 }
+
                 if(mmInStream == null) {
                     mmInStream = socket.getInputStream();
                     mmOutStream = socket.getOutputStream();
@@ -391,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         super.onDestroy();
 
-        if (isconnect)
+        if (isConnect)
         {
             doClose();
         }

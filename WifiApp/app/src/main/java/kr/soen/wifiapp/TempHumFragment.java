@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,16 +59,6 @@ public class TempHumFragment extends Fragment {
         super.onCreate(savedInstanceState);
         wifiManager = (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         pref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
-
-        if(wifiManager.isWifiEnabled())
-        {
-            if(!pref.getString("id", "").equals(""))
-            {
-                ((MainActivity)getActivity()).doCommu(REQUEST_CURRENT_TEMP_HUM);
-            }
-        }
-
-        setValue(((MainActivity)getActivity()).currentTempHumData);
     }
 
     @Override
@@ -111,9 +102,25 @@ public class TempHumFragment extends Fragment {
         avghum.setProgressWidth(15);
         avghum.setArcWidth(15);
 
-        setGraphData(current_temp[0], current_temp[1], hum[0], hum[1]);
-
         return layout;
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(this.getClass().getSimpleName(), "onResume()");
+        super.onResume();
+
+        if(wifiManager.isWifiEnabled())
+        {
+            if(!pref.getString("id", "").equals(""))
+            {
+                Log.d("SOCKET", "서버 연결 요청 _ TempHumFragment");
+                ((MainActivity)getActivity()).doCommu(REQUEST_CURRENT_TEMP_HUM);
+            }
+        }
+
+        setValue(((MainActivity)getActivity()).currentTempHumData);
+        setGraphData(current_temp[0], current_temp[1], hum[0], hum[1]);
     }
 
     @Override
@@ -208,4 +215,6 @@ public class TempHumFragment extends Fragment {
         animator1.start();
         animator2.start();
     }
+
+
 }

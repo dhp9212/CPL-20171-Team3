@@ -1,8 +1,12 @@
 package kr.soen.wifiapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +29,11 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class AccrueTempFragment extends Fragment {
+    public static final String REQUEST_ACCRUE_TEMP = "2";
+
+    WifiManager wifiManager;
+    SharedPreferences pref;
+
     float[] hot_accrue_tempTokens = new float[8];
     float[] cool_accrue_tempTokens = new float[8];
 
@@ -38,7 +47,9 @@ public class AccrueTempFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setValue(((MainActivity)getActivity()).accrueTempData);
+
+        wifiManager = (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        pref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -64,9 +75,24 @@ public class AccrueTempFragment extends Fragment {
         accruetempChart.setScaleEnabled(false);
         accruetempChart.getLegend().setEnabled(false);
 
-        setGraphData(hot_accrue_tempTokens, cool_accrue_tempTokens);
-
         return layout;
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(this.getClass().getSimpleName(), "onResume()");
+        super.onResume();
+
+        if(wifiManager.isWifiEnabled())
+        {
+            if (!pref.getString("id", "").equals("")) {
+                Log.d("SOCKET", "서버 연결 요청 _ AccrueTempFragment");
+                ((MainActivity)getActivity()).doCommu(REQUEST_ACCRUE_TEMP);
+            }
+        }
+
+        setValue(((MainActivity)getActivity()).accrueTempData);
+        setGraphData(hot_accrue_tempTokens, cool_accrue_tempTokens);
     }
 
     @Override

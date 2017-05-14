@@ -1,9 +1,7 @@
 package kr.soen.wifiapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -79,31 +77,24 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId())
         {
             case R.id.signup_btn:
-                //if (wifiManager.isWifiEnabled())
-                //{
+                if (wifiManager.isWifiEnabled())
+                {
                     id = idText.getText().toString();
                     password = passwordText.getText().toString();
-                    if(id.equals("") && password.equals(""))
-                    {
+                    if (id.equals("") && password.equals("")) {
                         logMessege("ID와 PASSWORD를 입력하세요.");
                         break;
-                    }
-                    else if(id.equals(""))
-                    {
+                    } else if (id.equals("")) {
                         logMessege("ID를 입력하세요.");
                         break;
-                    }
-                    else if (password.equals(""))
-                    {
+                    } else if (password.equals("")) {
                         logMessege("PASSWORD를 입력하세요.");
                         break;
-                    }
-                    else
-                    {
-                        Log.d("SOCKET","등록 시도");
+                    } else {
+                        Log.d("SOCKET", "등록 시도");
                         data = REQUEST_SIGNUP + "/" + id + "/" + password;
                         doCommu(data);
-                        Log.i("SOCKET",data);
+                        Log.i("SOCKET", data);
 
                         Intent data = new Intent();
                         data.putExtra("id", idText.getText().toString());
@@ -112,10 +103,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         finish();
                         break;
                     }
-                //}
+                }
 
-                //logMessege("WiFi가 활성화되지 않았습니다.");
-                //break;
+                logMessege("WiFi가 활성화되지 않았습니다.");
+                break;
         }
     }
 
@@ -139,9 +130,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 {
                     logMessege("계정 등록 실패");
                 }
-
-                logMessege("앱을 다시 시작해주세요.");
-
             }
         } catch (Exception e)
         {
@@ -211,6 +199,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
                 return result;
             } catch (Throwable t) {
+                Log.e("CLOSE SOCKET","error");
+                Log.e("CLOSE SOCKET",t.toString());
                 return t.toString();
             }
         }
