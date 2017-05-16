@@ -146,13 +146,13 @@ public class Serial implements SerialPortEventListener {
                 input.read(chunk, 0, available);
                 //test 용
                 //아두이노가 넘겨준걸 프린트함
-                //System.out.println(">> " + new String(chunk));      	
+                System.out.println(">> " + new String(chunk));      	
                 makeSerial(new String(chunk));
             
                 //통신받은걸 아두이노로 전송
                 //System.out.println(new String(chunk));
                 //output.write(chunk);
-           
+                
                 
             } catch (Exception e) { 
                 System.err.println(e.toString()); 
