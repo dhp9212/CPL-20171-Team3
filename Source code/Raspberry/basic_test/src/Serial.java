@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 //사용 예제를 위한 import
@@ -95,8 +96,18 @@ public class Serial implements SerialPortEventListener {
         } 
     }
 
-    // string 만드는 함수
-    public void makeSerial(String data){
+    /*    string 만드는 함수
+     * 	  resList : 결과를 ArrayList<String>형태로 반환함
+     * 	  
+     * 	  readString : 전역 변수
+     */
+
+    public ArrayList makeSerial(String data){
+    	//resList : 결과를 리턴할 변수
+    	ArrayList resList = new ArrayList<String>();
+    	
+    	//readString : 전역 변수
+    	
     	//스트링의 처음을 구분
     	if(readString.length() == 0){
     		if(data.substring(0,1).equals("R")){
@@ -106,11 +117,15 @@ public class Serial implements SerialPortEventListener {
         		if(array.length >1){
         			int i = 1;
         			while(true){
-        			System.out.println(readString);
-        			readString="";
-            		readString=readString + array[i++];
-            		if( i == array.length)
-            			break;
+        			
+        				//string 처리가 완료된 문자열 저장
+        				resList.add(readString);
+        			
+	        			//System.out.println(readString);
+	        			readString="";
+	            		readString=readString + array[i++];
+	            		if( i == array.length)
+	            			break;
         			}
         		}
     		}
@@ -122,19 +137,27 @@ public class Serial implements SerialPortEventListener {
     		if(array.length >1){
     			int i = 1;
     			while(true){
-    			System.out.println(readString);
-    			readString="";
-        		readString=readString + array[i++];
-        		if( i == array.length)
-        			break;
+    				//string 처리가 완료된 문자열 저장
+    				resList.add(readString);
+    				
+	    			//System.out.println(readString);
+	    			readString="";
+	        		readString=readString + array[i++];
+	        		if( i == array.length)
+	        			break;
     			}
     		}
     	}
     	//스트링 길이 17
     	if(readString.length() >= 17){
-    		System.out.println(readString);
+    		//string 처리가 완료된 문자열 저장
+			resList.add(readString);
+			
+    		//System.out.println(readString);
     		readString="";
     	}
+    	
+    	return resList;
     }
     
     
@@ -146,9 +169,14 @@ public class Serial implements SerialPortEventListener {
                 input.read(chunk, 0, available);
                 //test 용
                 //아두이노가 넘겨준걸 프린트함
-                System.out.println(">> " + new String(chunk));      	
-                makeSerial(new String(chunk));
-            
+                //System.out.println(">> " + new String(chunk));      	
+                ArrayList mString = makeSerial(new String(chunk));
+                
+                //활용!
+                for(int i=0;i<mString.size();i++){
+                	System.out.println(">> " + mString.get(i));
+                }
+                
                 //통신받은걸 아두이노로 전송
                 //System.out.println(new String(chunk));
                 //output.write(chunk);
