@@ -14,8 +14,7 @@ public class Database {
 	 public static final String REQUEST_CONTROL = "3";
 	 public static final String REQUEST_SIGNUP = "4";
 	 public static final String COLSE = "5";
-	 
-	
+
 	private String url = "jdbc:mysql://dhdb.cvqwpznjcq93.us-west-2.rds.amazonaws.com:3306/";
 	private String userName = "DH";
 	private String password = "dh123";
@@ -39,25 +38,7 @@ public class Database {
 		}
 	}
 	
-	public void test(){
-		try{
 
-			query = "SELECT * FROM ACCOUNT";
-			
-			ResultSet result = state.executeQuery(query);
-			
-			while(result.next()){
-				
-				String id = result.getString("ID");
-				String lastLogin = result.getString("LASTLOGIN");
-				System.out.println(id + " " + lastLogin);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-	}
-	
 	public ResultSet select(String flag, String payload){
 		
 		ResultSet result = null;
@@ -71,6 +52,31 @@ public class Database {
 		}
 		
 		return result;
+	}
+	
+	public String rawInsert(String payload){
+		String ret = "";
+		String[] splt = payload.split("/");
+		
+		for(int i = 0; i < splt.length; i++){
+			
+			query = "INSERT INTO SENSOR_DATA VALUES(";
+			query += "'" + splt[i].substring(4, 11) + "',";
+			query += Float.parseFloat(splt[i].substring(13, 16));
+			query += ", now());";
+			
+			System.out.println(query);
+			
+			try{
+				state.executeUpdate(query);
+				ret = "S";
+			}catch(Exception e){
+				e.printStackTrace();
+				ret = "F";
+				break;
+			}
+		}
+		return ret;
 	}
 	
 
@@ -99,6 +105,7 @@ public class Database {
 			query += ", now()"; // 현재 서버가 북미에 있기 때문에 북미 시간으로 들어간다. 프로시저 콜으로 될듯
 			query += ");";			 	 
 		}
+		
 		
 		System.out.println(query);
 		

@@ -14,11 +14,12 @@ import org.eclipse.californium.core.network.config.NetworkConfig;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 
+
 public class PlatformCoapServer extends CoapServer{
 	
 	private static final int COAP_PORT = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
 	
-	
+	public static final String RAW = "00";
 	
 	
 	public void addEndpoints(){
@@ -49,8 +50,7 @@ public class PlatformCoapServer extends CoapServer{
 		
 		@Override
 		public void handleGET(CoapExchange exchange){
-			// when server receive "GET" message from client
-			// GET means pull from client to server
+			// when server receive "GET" message
 			
 			byte[] payload = exchange.getRequestPayload();
 			
@@ -63,18 +63,19 @@ public class PlatformCoapServer extends CoapServer{
 				e.printStackTrace();
 			}
 
-			exchange.respond("Success connection");
+			exchange.respond("Accept");
 		}
 		
 		@Override
 		public void handlePUT(CoapExchange exchange){
-			// when server receive "PUT" message from client
-			// PUT means push from server to client
+			// when server receive "PUT" message
 			
 			byte[] payload = exchange.getRequestPayload();
+			Database db = new Database();
 			
 			try{
 				String message = new String(payload, "UTF-8");
+				db.rawInsert(message);
 				/**/
 				System.out.println(message);
 				/**/

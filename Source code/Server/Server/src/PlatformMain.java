@@ -91,6 +91,7 @@ public class PlatformMain {
 	            int n;
 	            
 	            Database db = new Database();
+	            PlatformCoapSend send;
 	            
 	            while ((n = wfIn.read(buff)) > 0) 
 	            {  
@@ -168,8 +169,7 @@ public class PlatformMain {
 	            		System.out.println("Client's request : lightOn");
 	            		
 	            		payload = "APP_LIGHT_ON00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -182,8 +182,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : lightOFF");
 	            		
 	            		payload = "APP_LIGHT_OF00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -196,8 +196,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : lightAuto");
 	            		
 	            		payload = "APP_LIGHT_AU00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -213,8 +213,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : hitterOn");
 	            		
 	            		payload = "APP_HITTE_ON00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -227,8 +227,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : hitterOFF");
 	            		
 	            		payload = "APP_HITTE_OF00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -241,8 +241,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : hitterAuto");
 	            		
 	            		payload = "APP_HITTE_AU00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -258,8 +258,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : humidifierOn");
 	            		
 	            		payload = "APP_HUMID_ON00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -272,8 +272,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : humidifierOFF");
 	            		
 	            		payload = "APP_HUMID_OF00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -286,8 +286,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : humidifierAuto");
 	            		
 	            		payload = "APP_HUMID_AU00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -304,8 +304,8 @@ public class PlatformMain {
 	            		
 	            		
 	            		payload = "APP_MOTOR_LE00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -318,8 +318,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : humidifierOFF");
 	            		
 	            		payload = "APP_MOTOR_RI00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -332,8 +332,8 @@ public class PlatformMain {
 	            		System.out.println("Client's request : humidifierAuto");
 	            		
 	            		payload = "APP_MOTOR_OF00000";
-	            		Request request = createRequest(method, uri, payload);
-	            		processRequest(request);
+	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -370,75 +370,6 @@ public class PlatformMain {
 	    		 buff[i] = 0;
 	    	 }
 	     }
-	 }
-	 
-	 
-	 public static Request createRequest(String method, String uri, String payload){ 
-		 Request ret = null;
-		 
-		 if(method.equals("GET"))
-			 ret = Request.newGet();
-		 else if(method.equals("PUT"))
-			 ret = Request.newPut();
-		 
-		 ret.setURI(uri);
-		 ret.setPayload(payload);
-		 
-		 return ret;
-	 }
-	 
-	 public static void processRequest(Request request){
-		 
-		 String message;
-		 
-		 try { 
-				request.send(); 
-			 
-			    // receive response 
-			    Response response = null; 
-			    	
-			    try { 
-			    	response = request.waitForResponse(); 
-			    } catch (InterruptedException e) { 
-			    	System.err.println("Failed to receive response: " + e.getMessage()); 
-			    } 
-			  
-			    // output response 
-			    if (response != null) { 
-			  
-			    	System.out.println(Utils.prettyPrint(response));
-			    	System.out.println("Time elapsed (ms): " + response.getRTT()); 
-			    	
-			    	byte[] resp_payload = response.getPayload();
-			    	message = new String(resp_payload, "UTF-8");
-			    	System.out.println("message :" + message);
-			    	
-			  
-			     // check of response contains resources 
-			    	if (response.getOptions().isContentFormat(MediaTypeRegistry.APPLICATION_LINK_FORMAT)) { 
-			  
-			    		String linkFormat = response.getPayloadString(); 
-			  
-			    		// output discovered resources 
-			    		System.out.println("\nDiscovered resources:"); 
-			    		System.out.println(linkFormat); 
-			  
-			    	} 
-			    	else { 
-			    	 	// check if link format was expected by client 
-			    	 	if (method.equals("DISCOVER")) { 
-			    		System.out.println("Server error: Link format not specified"); 
-			    	 	} 
-			    	} 
-			    }
-			    else { 
-			    	// no response received  
-			    	System.err.println("Request timed out"); 
-			    } 
-
-			  } catch (Exception e) { 
-				  System.err.println("Failed to execute request: " + e.getMessage()); 
-			  } 
 	 }
 
 	 public static void main(String[] args){

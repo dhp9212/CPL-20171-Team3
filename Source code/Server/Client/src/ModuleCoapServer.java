@@ -46,8 +46,7 @@ public class ModuleCoapServer extends CoapServer{
 		
 		@Override
 		public void handleGET(CoapExchange exchange){
-			// when server receive "GET" message from client
-			// GET means pull from client to server
+			// when server receive "GET" message
 			
 			byte[] payload = exchange.getRequestPayload();
 			
@@ -65,13 +64,16 @@ public class ModuleCoapServer extends CoapServer{
 		
 		@Override
 		public void handlePUT(CoapExchange exchange){
-			// when server receive "PUT" message from client
-			// PUT means push from server to client
+			// when server receive "PUT" message
 			
 			byte[] payload = exchange.getRequestPayload();
 			
+			ModuleMain main = new ModuleMain();
+			
 			try{
 				String message = new String(payload, "UTF-8");
+				main.push(message);
+				
 				/**/
 				System.out.println(message);
 				/**/

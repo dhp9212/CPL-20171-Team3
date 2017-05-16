@@ -6,6 +6,7 @@ import gnu.io.SerialPortEventListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 //사용 예제를 위한 import
 import java.util.Scanner;
@@ -13,6 +14,7 @@ import java.util.Scanner;
 public class ModuleMain implements SerialPortEventListener {
  
     SerialPort serialPort;
+    String readString = "";
  
     private static final String PORT_NAMES[] = {   
           "/dev/tty.usbserial-A9007UX1",//MAX OS X
@@ -34,8 +36,8 @@ public class ModuleMain implements SerialPortEventListener {
     
     // for CoAP
     private static String method = "PUT";
-    private static String uri = "coap://192.168.10.102:5683/Platform";
-    //private static String uri = "coap://54.71.172.224:5683/Platform";
+    //private static String uri = "coap://192.168.10.102:5683/Platform";
+    private static String uri = "coap://54.71.172.224:5683/Platform";
     private static String payload = "Rasp에서 가는 packet";
  
     public void initialize() { 
@@ -89,23 +91,98 @@ public class ModuleMain implements SerialPortEventListener {
         } 
     }
 
+    /*    string 만드는 함수
+     * 	  resList : 결과를 ArrayList<String>형태로 반환함
+     * 	  
+     * 	  readString : 전역 변수
+     */
+
+    public ArrayList makeSerial(String data){
+    	//resList : 결과를 리턴할 변수
+    	ArrayList resList = new ArrayList<String>();
+    	
+    	//readString : 전역 변수
+    	
+    	//스트링의 처음을 구분
+    	if(readString.length() == 0){
+    		if(data.substring(0,1).equals("R")){
+    			String[] array = data.split("@");
+    			readString = readString + array[0];
+        		
+        		if(array.length >1){
+        			int i = 1;
+        			while(true){
+        			
+        				//string 처리가 완료된 문자열 저장
+        				resList.add(readString);
+        			
+	        			//System.out.println(readString);
+	        			readString="";
+	            		readString=readString + array[i++];
+	            		if( i == array.length)
+	            			break;
+        			}
+        		}
+    		}
+    	}
+    	//스트링 구분자 "@"
+    	else{
+    		String[] array = data.split("@");
+    		readString = readString + array[0];
+    		if(array.length >1){
+    			int i = 1;
+    			while(true){
+    				//string 처리가 완료된 문자열 저장
+    				resList.add(readString);
+    				
+	    			//System.out.println(readString);
+	    			readString="";
+	        		readString=readString + array[i++];
+	        		if( i == array.length)
+	        			break;
+    			}
+    		}
+    	}
+    	//스트링 길이 17
+    	if(readString.length() >= 17){
+    		//string 처리가 완료된 문자열 저장
+			resList.add(readString);
+    		//System.out.println(readString);
+    		readString="";
+    	}
+    	
+    	return resList;
+    }
+    
     public synchronized void serialEvent(SerialPortEvent oEvent) { 
+    	
+    	String ret = "";
+    	
+    	
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) { 
             try { 
                 int available = input.available();
                 byte chunk[] = new byte[available]; 
                 input.read(chunk, 0, available); 
                 
-                payload = new String(chunk);
                 
+                ArrayList arr = makeSerial(new String(chunk));
+                
+                for(int i = 0;i < arr.size();i++){
+                	ret += arr.get(i);
+                	if(i + 1 != arr.size())
+                		ret += "/";
+                }
+                
+                payload = ret;                
                 ModuleCoapSend coap = new ModuleCoapSend(method, uri, payload);
+                
                 //통신받은걸 아두이노로 전송
                 //System.out.println(new String(chunk));
                 //output.write(chunk);
            
-                //test 용
-                //아두이노로 넘겨준걸 프린트함
-                System.out.println(">> " + new String(chunk));
+                System.out.println(">> " + payload);      	
+                
                 
             } catch (Exception e) { 
                 System.err.println(e.toString()); 
@@ -113,41 +190,33 @@ public class ModuleMain implements SerialPortEventListener {
         }
     }
     
-    public void testing(){
-    	 Scanner in = new Scanner(System.in);
-     
-    	 System.out.println("Please enter text");
-         while(true){
-         	String text = in.next(); 
-         	byte[] byteArray = text.getBytes();
+    public void push(String message){
+    	 
+         	byte[] byteArray = message.getBytes();
          	try {
 				output.write(byteArray);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-         }
     }
     
     public static void main(String[] args) throws Exception {
-       
+    	
+    	/* Linux OS 상에서 구동 시 Terminal에 입력
+    	if(args.length != 1){
+    		System.out.println("Usage : java -Djava.library.path/usr/lib/jni -cp /usr/share/java/RXTXcomm.jar -jar FILENAME.jar IP_ADDRESS");
+    		System.exit(0);
+    	}
+    	*/
         ModuleMain main = new ModuleMain(); 
-        //main.initialize(); 
-        System.out.println("Started"); 
         
-        /* 같은 ip로는 테스트가 안된다.
-         * 향후에 라즈베리파이에 올려서 테스트 예정
         ModuleCoapServer server = new ModuleCoapServer();
         server.addEndpoints();
         server.start();
-        */
-        ModuleCoapSend coap = new ModuleCoapSend(method, uri, payload);
         
-        //main.testing();
+        main.initialize(); 
+        System.out.println("Module Accept Started");
         
-        /*while (true) {
-        	main.Session session = main.accept();  
-	        new Thread(session).start(); 
-		}*/
     } 
 }
