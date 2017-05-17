@@ -1,10 +1,8 @@
 package kr.soen.wifiapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +15,6 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
     public static final int RESULT_ID_AND_PASSWORD = 2;
 
     SharedPreferences pref;
-    WifiManager wifiManager;
 
     TextView title;
 
@@ -29,7 +26,6 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         pref = getSharedPreferences("pref", MODE_PRIVATE);
 
         title = (TextView)findViewById(R.id.text3);

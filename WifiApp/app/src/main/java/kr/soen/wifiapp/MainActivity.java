@@ -1,13 +1,9 @@
 package kr.soen.wifiapp;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -31,7 +27,7 @@ import java.net.Socket;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     public static final int ServerPort = 5000;
     public static final String ServerIP = "54.71.172.224";
-    //public static final String ServerIP = "14.46.3.32";
+    //public static final String ServerIP = "14.46.3.8";
 
     public static final String REQUEST_CURRENT_TEMP_HUM = "1";
     public static final String REQUEST_ACCRUE_TEMP = "2";
@@ -50,9 +46,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     SharedPreferences pref;
     BackPressCloseHandler backPressCloseHandler;
 
-    WifiManager wifiManager;
-    IntentFilter filter;
-    WRhandler handler;
     AlertDialog.Builder dialog;
     Toast logMsg;
 
@@ -70,8 +63,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         pref = getSharedPreferences("pref", MODE_PRIVATE);
         if (pref.getBoolean("isfirst", true))
@@ -132,32 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         settingBtn.setOnClickListener(this);
 
         backPressCloseHandler = new BackPressCloseHandler(this);//뒤로가기 handler
-
-        filter = new IntentFilter();
-        filter.addAction(wifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(WifiRecv, filter);
     }
-
-    BroadcastReceiver WifiRecv = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            handler = new WRhandler();
-
-            String action = intent.getAction();
-
-            if(action.equals(wifiManager.WIFI_STATE_CHANGED_ACTION))
-            {
-                if (wifiManager.getWifiState() == wifiManager.WIFI_STATE_DISABLED)
-                {
-                    handler.sendEmptyMessage(1);
-
-                }
-                else if (wifiManager.getWifiState() == wifiManager.WIFI_STATE_ENABLED)
-                {
-                    handler.sendEmptyMessage(2);
-                }
-            }
-        }
-    };
 
     class WRhandler extends Handler
     {
@@ -392,7 +358,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean("isfirst", false);
         editor.commit();
-
-        unregisterReceiver(WifiRecv);
     }
 }

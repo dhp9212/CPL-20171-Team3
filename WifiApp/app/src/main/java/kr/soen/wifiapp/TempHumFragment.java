@@ -4,14 +4,12 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,7 +27,6 @@ import java.util.StringTokenizer;
 public class TempHumFragment extends Fragment {
     public static final String REQUEST_CURRENT_TEMP_HUM = "1";
 
-    WifiManager wifiManager;
     SharedPreferences pref;
 
     float[] current_temp = new float[2];
@@ -57,14 +54,13 @@ public class TempHumFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        wifiManager = (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         pref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_temp_hum, container, false);
+        RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.fragment_temp_hum, container, false);
 
         chartTitle = (TextView)layout.findViewById(R.id.bar_chart_title) ;
         chartTitle.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
@@ -110,13 +106,10 @@ public class TempHumFragment extends Fragment {
         Log.d(this.getClass().getSimpleName(), "onResume()");
         super.onResume();
 
-        if(wifiManager.isWifiEnabled())
+        if(!pref.getString("id", "").equals(""))
         {
-            if(!pref.getString("id", "").equals(""))
-            {
-                Log.d("SOCKET", "서버 연결 요청 _ TempHumFragment");
-                ((MainActivity)getActivity()).doCommu(REQUEST_CURRENT_TEMP_HUM);
-            }
+            Log.d("SOCKET", "서버 연결 요청 _ TempHumFragment");
+            ((MainActivity)getActivity()).doCommu(REQUEST_CURRENT_TEMP_HUM);
         }
 
         setValue(((MainActivity)getActivity()).currentTempHumData);

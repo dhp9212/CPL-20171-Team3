@@ -1,9 +1,7 @@
 package kr.soen.wifiapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,7 +35,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText idText, passwordText;
     Button signupBtn;
 
-    WifiManager wifiManager;
     Toast logMsg;
 
     String id;
@@ -50,8 +47,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
-        wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         textView1 = (TextView)findViewById(R.id.id_text) ;
         textView1.setTypeface(Typeface.createFromAsset(getAssets(), "NanumBarunpenR.ttf"));
@@ -77,36 +72,31 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId())
         {
             case R.id.signup_btn:
-                if (wifiManager.isWifiEnabled())
-                {
-                    id = idText.getText().toString();
-                    password = passwordText.getText().toString();
-                    if (id.equals("") && password.equals("")) {
-                        logMessege("ID와 PASSWORD를 입력하세요.");
-                        break;
-                    } else if (id.equals("")) {
-                        logMessege("ID를 입력하세요.");
-                        break;
-                    } else if (password.equals("")) {
-                        logMessege("PASSWORD를 입력하세요.");
-                        break;
-                    } else {
-                        Log.d("SOCKET", "등록 시도");
-                        data = REQUEST_SIGNUP + "/" + id + "/" + password;
-                        doCommu(data);
-                        Log.i("SOCKET", data);
+                id = idText.getText().toString();
+                password = passwordText.getText().toString();
 
-                        Intent data = new Intent();
-                        data.putExtra("id", idText.getText().toString());
-                        data.putExtra("password", passwordText.getText().toString());
-                        setResult(RESULT_ID_AND_PASSWORD, data);
-                        finish();
-                        break;
-                    }
+                if (id.equals("") && password.equals("")) {
+                    logMessege("ID와 PASSWORD를 입력하세요.");
+                    break;
+                } else if (id.equals("")) {
+                    logMessege("ID를 입력하세요.");
+                    break;
+                } else if (password.equals("")) {
+                    logMessege("PASSWORD를 입력하세요.");
+                    break;
+                } else {
+                    Log.d("SOCKET", "등록 시도");
+                    data = REQUEST_SIGNUP + "/" + id + "/" + password;
+                    doCommu(data);
+                    Log.i("SOCKET", data);
+
+                    Intent data = new Intent();
+                    data.putExtra("id", idText.getText().toString());
+                    data.putExtra("password", passwordText.getText().toString());
+                    setResult(RESULT_ID_AND_PASSWORD, data);
+                    finish();
+                    break;
                 }
-
-                logMessege("WiFi가 활성화되지 않았습니다.");
-                break;
         }
     }
 

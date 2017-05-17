@@ -1,142 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:seekarc="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#00000000">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="#30FFFFFF"
-        android:layout_marginTop="24dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/bar_chart_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:textSize="22sp"
-            android:textColor="@color/white"
-            android:text="현재온도(℃)"/>
-
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/current_temp_chart"
-            android:layout_width="match_parent"
-            android:layout_height="230dp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="#30FFFFFF"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_centerVertical="true">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+            android:background="#30FFFFFF"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/bar_chart_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:textSize="22sp"
+                android:textColor="@color/white"
+                android:text="현재온도(℃)"/>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/current_temp_chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="#30FFFFFF"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:orientation="vertical">
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/seek_title1"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="현재습도"
-                    android:textSize="22sp"
-                    android:textColor="@color/white"/>
-
-                <RelativeLayout
-                    android:layout_width="160dp"
-                    android:layout_height="160dp">
-                    <com.triggertrap.seekarc.SeekArc
-                        android:id="@+id/currenthumseekArc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="30dp"
-                        seekarc:rotation="0"
-                        seekarc:startAngle="0"
-                        seekarc:sweepAngle="360"
-                        seekarc:touchInside="false"
-                        seekarc:roundEdges="false"
-                        seekarc:clockwise="true"
-                        seekarc:enabled="false" />
+                    android:layout_marginEnd="12dp"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/currenthumseekArcProgress"
+                        android:id="@+id/seek_title1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:text="0"
-                        android:textColor="@color/white"
-                        android:textSize="45sp" />
-                </RelativeLayout>
-            </LinearLayout>
+                        android:layout_gravity="center_horizontal"
+                        android:text="현재습도"
+                        android:textSize="22sp"
+                        android:textColor="@color/white"/>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:orientation="vertical">
+                    <RelativeLayout
+                        android:layout_width="160dp"
+                        android:layout_height="160dp">
+                        <com.triggertrap.seekarc.SeekArc
+                            android:id="@+id/currenthumseekArc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="30dp"
+                            seekarc:rotation="0"
+                            seekarc:startAngle="0"
+                            seekarc:sweepAngle="360"
+                            seekarc:touchInside="false"
+                            seekarc:roundEdges="false"
+                            seekarc:clockwise="true"
+                            seekarc:enabled="false" />
 
-                <TextView
-                    android:id="@+id/seek_title2"
+                        <TextView
+                            android:id="@+id/currenthumseekArcProgress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:textSize="45sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="평균습도"
-                    android:textSize="22sp"
-                    android:textColor="@color/white"/>
-
-                <RelativeLayout
-                    android:layout_width="160dp"
-                    android:layout_height="160dp">
-                    <com.triggertrap.seekarc.SeekArc
-                        android:id="@+id/avghumseekArc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="30dp"
-                        seekarc:rotation="0"
-                        seekarc:startAngle="0"
-                        seekarc:sweepAngle="360"
-                        seekarc:touchInside="false"
-                        seekarc:roundEdges="false"
-                        seekarc:clockwise="true"
-                        seekarc:enabled="false" />
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/avghumseekArcProgress"
+                        android:id="@+id/seek_title2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:text="0"
-                        android:textColor="@color/white"
-                        android:textSize="45sp" />
-                </RelativeLayout>
+                        android:layout_gravity="center_horizontal"
+                        android:text="평균습도"
+                        android:textSize="22sp"
+                        android:textColor="@color/white"/>
+
+                    <RelativeLayout
+                        android:layout_width="160dp"
+                        android:layout_height="160dp">
+                        <com.triggertrap.seekarc.SeekArc
+                            android:id="@+id/avghumseekArc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="30dp"
+                            seekarc:rotation="0"
+                            seekarc:startAngle="0"
+                            seekarc:sweepAngle="360"
+                            seekarc:touchInside="false"
+                            seekarc:roundEdges="false"
+                            seekarc:clockwise="true"
+                            seekarc:enabled="false" />
+
+                        <TextView
+                            android:id="@+id/avghumseekArcProgress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:textSize="45sp" />
+                    </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-
-</LinearLayout>
+</RelativeLayout>

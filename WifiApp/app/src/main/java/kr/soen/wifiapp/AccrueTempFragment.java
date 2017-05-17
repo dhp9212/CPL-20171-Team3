@@ -31,7 +31,6 @@ import java.util.StringTokenizer;
 public class AccrueTempFragment extends Fragment {
     public static final String REQUEST_ACCRUE_TEMP = "2";
 
-    WifiManager wifiManager;
     SharedPreferences pref;
 
     float[] hot_accrue_tempTokens = new float[8];
@@ -48,7 +47,6 @@ public class AccrueTempFragment extends Fragment {
     {
         super.onCreate(savedInstanceState);
 
-        wifiManager = (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         pref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
     }
 
@@ -83,12 +81,10 @@ public class AccrueTempFragment extends Fragment {
         Log.d(this.getClass().getSimpleName(), "onResume()");
         super.onResume();
 
-        if(wifiManager.isWifiEnabled())
+        if (!pref.getString("id", "").equals(""))
         {
-            if (!pref.getString("id", "").equals("")) {
                 Log.d("SOCKET", "서버 연결 요청 _ AccrueTempFragment");
                 ((MainActivity)getActivity()).doCommu(REQUEST_ACCRUE_TEMP);
-            }
         }
 
         setValue(((MainActivity)getActivity()).accrueTempData);

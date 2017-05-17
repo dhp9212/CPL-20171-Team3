@@ -1,12 +1,8 @@
 package kr.soen.wifiapp;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.wifi.WifiManager;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -14,52 +10,16 @@ import android.widget.Toast;
 public class LoadingActivity extends AppCompatActivity {
     SharedPreferences pref;
 
-    WifiManager wifiManager;
-
     Toast logMsg;
-    AlertDialog.Builder dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
         pref = getSharedPreferences("pref", MODE_PRIVATE);
 
-        //startLoading();
-
-        if (wifiManager.isWifiEnabled())
-        {
-            startLoading();//로딩화면 2초 동안 출력
-        }
-        else
-        {
-            dialog = new AlertDialog.Builder(this);
-            dialog.setTitle("WiFi가 활성화되지 않았습니다.");
-            dialog.setMessage("WiFi를 활성화 하시겠습니까?");
-
-            // OK 버튼 이벤트
-            dialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // 사용자에게 wifi 활성화 요청
-                    wifiManager.setWifiEnabled(true);
-
-                    startLoading();//로딩화면 2초 동안 출력
-                }
-            });
-
-            // Cancel 버튼 이벤트
-            dialog.setNegativeButton("아니요",new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    logMessege("WiFi 활성화가 취소되었습니다.");
-                    dialog.cancel();
-                    finish();
-                }
-            });
-            dialog.show();
-        }
+        startLoading();
     }
 
     private void startLoading() {

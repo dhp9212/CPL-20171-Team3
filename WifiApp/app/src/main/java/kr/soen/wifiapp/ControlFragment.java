@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -38,7 +37,6 @@ public class ControlFragment extends Fragment implements View.OnClickListener{
     public static final String APP_MOTOR_OF = "42";
 
     SharedPreferences pref;
-    WifiManager wifiManager;
     Toast logMsg;
 
     ImageButton lightBtn, hitterBtn, humBtn, motorBtn;
@@ -97,7 +95,6 @@ public class ControlFragment extends Fragment implements View.OnClickListener{
     {
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.fragment_control, container, false);
 
-        wifiManager = (WifiManager)getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         pref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
 
         lightBtn = (ImageButton)layout.findViewById(R.id.light_btn);
@@ -135,12 +132,10 @@ public class ControlFragment extends Fragment implements View.OnClickListener{
 
         if (((MainActivity)getActivity()).isFirstControlConnect)
         {
-            if(wifiManager.isWifiEnabled())
+            if (!pref.getString("id", "").equals(""))
             {
-                if (!pref.getString("id", "").equals("")) {
                     Log.d("SOCKET", "서버 연결 요청 _ ControlFragment");
                     ((MainActivity)getActivity()).doCommu(REQUEST_STATE);
-                }
             }
 
             setValue(((MainActivity)getActivity()).stateData);
@@ -219,349 +214,296 @@ public class ControlFragment extends Fragment implements View.OnClickListener{
         switch (v.getId())
         {
             case R.id.light_btn:
-                if (wifiManager.isWifiEnabled())
+                if(!pref.getString("id", "").equals(""))
                 {
-                    if(!pref.getString("id", "").equals(""))
+                    if(lightState == 0)
                     {
-                        if(lightState == 0)
-                        {
-                            ((MainActivity)getActivity()).doCommuForState(APP_LIGHT_ON);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
+                        ((MainActivity)getActivity()).doCommuForState(APP_LIGHT_ON);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                            Log.d("CONTROL","HIT_ON 누름");
-                            if (result_s.equals("S"))
-                            {
-                                Log.d("CONTROL","S를 받음");
-                                lightBtn.setImageResource(R.drawable.uv_button_state);
-                                lightState = 1;
-                            }
-                        }
-                        else
+                        Log.d("CONTROL","HIT_ON 누름");
+                        if (result_s.equals("S"))
                         {
-                            ((MainActivity)getActivity()).doCommuForState(APP_LIGHT_OF);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
-
-                            if (result_s.equals("S"))
-                            {
-                                lightBtn.setImageResource(R.drawable.uv_off_button_state);
-                                lightState = 0;
-                            }
+                            Log.d("CONTROL","S를 받음");
+                            lightBtn.setImageResource(R.drawable.uv_button_state);
+                            lightState = 1;
                         }
-                        break;
                     }
                     else
                     {
-                        logMessege("계정이 등록되지 않았습니다");
-                        break;
-                    }
-                }
+                        ((MainActivity)getActivity()).doCommuForState(APP_LIGHT_OF);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                logMessege("WiFi가 활성화되지 않았습니다.");
-                break;
+                        if (result_s.equals("S"))
+                        {
+                            lightBtn.setImageResource(R.drawable.uv_off_button_state);
+                            lightState = 0;
+                        }
+                    }
+                    break;
+                }
+                else
+                {
+                    logMessege("계정이 등록되지 않았습니다");
+                    break;
+                }
 
             case R.id.light_btn_auto:
-                if (wifiManager.isWifiEnabled())
+                if(!pref.getString("id", "").equals(""))
                 {
-                    if(!pref.getString("id", "").equals(""))
+                    if(lightAutoState == 0)
                     {
-                        if(lightAutoState == 0)
-                        {
-                            ((MainActivity)getActivity()).doCommuForState(APP_LIGHT_AU);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
+                        ((MainActivity)getActivity()).doCommuForState(APP_LIGHT_AU);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                            if (result_s.equals("S"))
-                            {
-                                //source to add auto
-                                //lightBtnAuto.setTextColor(getResources().getColor(R.color.colorAccent));
-                                lightAutoState = 1;
-                            }
-                        }
-                        else
+                        if (result_s.equals("S"))
                         {
-                            ((MainActivity)getActivity()).doCommuForState(APP_LIGHT_AU);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
-
-                            if (result_s.equals("S"))
-                            {
-                                //source to add
-                                //lightBtnAuto.setTextColor(getResources().getColor(R.color.gray));
-                                lightAutoState = 0;
-                            }
+                            //source to add auto
+                            //lightBtnAuto.setImageResource(R.drawable.);
+                            lightAutoState = 1;
                         }
-                        break;
                     }
                     else
                     {
-                        logMessege("계정이 등록되지 않았습니다");
-                        break;
-                    }
-                }
+                        ((MainActivity)getActivity()).doCommuForState(APP_LIGHT_AU);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                logMessege("WiFi가 활성화되지 않았습니다.");
-                break;
+                        if (result_s.equals("S"))
+                        {
+                            //source to add
+                            //lightBtnAuto.setImageResource(R.drawable.);
+                            lightAutoState = 0;
+                        }
+                    }
+                    break;
+                }
+                else
+                {
+                    logMessege("계정이 등록되지 않았습니다");
+                    break;
+                }
 
             case R.id.hitter_btn:
-                if (wifiManager.isWifiEnabled())
+                if(!pref.getString("id", "").equals(""))
                 {
-                    if(!pref.getString("id", "").equals(""))
+                    if(hitterState == 0)
                     {
-                        if(hitterState == 0)
+                        ((MainActivity)getActivity()).doCommuForState(APP_HITTE_ON);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
+                        Log.d("CONTROL","HIT_ON 누름");
+                        if (result_s.equals("S"))
                         {
-                            ((MainActivity)getActivity()).doCommuForState(APP_HITTE_ON);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
-                            Log.d("CONTROL","HIT_ON 누름");
-                            if (result_s.equals("S"))
-                            {
-                                Log.d("CONTROL","S를 받음");
-                                hitterBtn.setImageResource(R.drawable.heat_button_state);
-                                hitterState = 1;
-                            }
+                            Log.d("CONTROL","S를 받음");
+                            hitterBtn.setImageResource(R.drawable.heat_button_state);
+                            hitterState = 1;
                         }
-                        else
-                        {
-                            ((MainActivity)getActivity()).doCommuForState(APP_HITTE_OF);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
-
-                            if (result_s.equals("S"))
-                            {
-                                hitterBtn.setImageResource(R.drawable.heat_off_button_state);
-                                hitterState = 0;
-                            }
-                        }
-                        break;
                     }
                     else
                     {
-                        logMessege("계정이 등록되지 않았습니다");
-                        break;
-                    }
-                }
+                        ((MainActivity)getActivity()).doCommuForState(APP_HITTE_OF);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                logMessege("WiFi가 활성화되지 않았습니다.");
-                break;
+                        if (result_s.equals("S"))
+                        {
+                            hitterBtn.setImageResource(R.drawable.heat_off_button_state);
+                            hitterState = 0;
+                        }
+                    }
+                    break;
+                }
+                else
+                {
+                    logMessege("계정이 등록되지 않았습니다");
+                    break;
+                }
 
             case R.id.hitter_btn_auto:
-                if (wifiManager.isWifiEnabled())
+                if(!pref.getString("id", "").equals(""))
                 {
-                    if(!pref.getString("id", "").equals(""))
+                    if(hitterAutoState == 0)
                     {
-                        if(hitterAutoState == 0)
-                        {
-                            ((MainActivity)getActivity()).doCommuForState(APP_HITTE_AU);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
+                        ((MainActivity)getActivity()).doCommuForState(APP_HITTE_AU);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                            if (result_s.equals("S"))
-                            {
-                                //auto - on
-                                //hitterBtnAuto.setTextColor(getResources().getColor(R.color.colorAccent));
-                                hitterAutoState = 1;
-                            }
-                        }
-                        else
+                        if (result_s.equals("S"))
                         {
-                            ((MainActivity)getActivity()).doCommuForState(APP_HITTE_AU);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
-
-                            if (result_s.equals("S"))
-                            {
-                                //auto - off
-                                //hitterBtnAuto.setTextColor(getResources().getColor(R.color.gray));
-                                hitterAutoState = 0;
-                            }
+                            //auto - on
+                            //hitterBtnAuto.setImageResource(R.drawable.);
+                            hitterAutoState = 1;
                         }
-                        break;
                     }
                     else
                     {
-                        logMessege("계정이 등록되지 않았습니다");
-                        break;
-                    }
-                }
+                        ((MainActivity)getActivity()).doCommuForState(APP_HITTE_AU);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                logMessege("WiFi가 활성화되지 않았습니다.");
-                break;
+                        if (result_s.equals("S"))
+                        {
+                            //auto - off
+                            //hitterBtnAuto.setImageResource(R.drawable.);
+                            hitterAutoState = 0;
+                        }
+                    }
+                    break;
+                }
+                else
+                {
+                    logMessege("계정이 등록되지 않았습니다");
+                    break;
+                }
 
             case R.id.hum_btn:
-                if (wifiManager.isWifiEnabled())
+                if(!pref.getString("id", "").equals(""))
                 {
-                    if(!pref.getString("id", "").equals(""))
+                    if(humState == 0)
                     {
-                        if(humState == 0)
-                        {
-                            ((MainActivity)getActivity()).doCommuForState(APP_HUMID_ON);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
+                        ((MainActivity)getActivity()).doCommuForState(APP_HUMID_ON);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                            if (result_s.equals("S"))
-                            {
-                                humBtn.setImageResource(R.drawable.hum_button_state);
-                                humState = 1;
-                            }
-                        }
-                        else
+                        if (result_s.equals("S"))
                         {
-                            ((MainActivity)getActivity()).doCommuForState(APP_HUMID_OF);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
-
-                            if (result_s.equals("S"))
-                            {
-                                humBtn.setImageResource(R.drawable.hum_off_button_state);
-                                humState = 0;
-                            }
+                            humBtn.setImageResource(R.drawable.hum_button_state);
+                            humState = 1;
                         }
-                        break;
                     }
                     else
                     {
-                        logMessege("계정이 등록되지 않았습니다");
-                        break;
-                    }
-                }
+                        ((MainActivity)getActivity()).doCommuForState(APP_HUMID_OF);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                logMessege("WiFi가 활성화되지 않았습니다.");
-                break;
+                        if (result_s.equals("S"))
+                        {
+                            humBtn.setImageResource(R.drawable.hum_off_button_state);
+                            humState = 0;
+                        }
+                    }
+                    break;
+                }
+                else
+                {
+                    logMessege("계정이 등록되지 않았습니다");
+                    break;
+                }
 
             case R.id.hum_btn_auto:
-                if (wifiManager.isWifiEnabled())
+                if(!pref.getString("id", "").equals(""))
                 {
-                    if(!pref.getString("id", "").equals(""))
+                    if(humAutoState == 0)
                     {
-                        if(humAutoState == 0)
-                        {
-                            ((MainActivity)getActivity()).doCommuForState(APP_HUMID_AU);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
+                        ((MainActivity)getActivity()).doCommuForState(APP_HUMID_AU);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                            if (result_s.equals("S"))
-                            {
-                                //auto - on
-                                //humBtnAuto.setTextColor(getResources().getColor(R.color.colorAccent));
-                                humAutoState = 1;
-                            }
-                        }
-                        else
+                        if (result_s.equals("S"))
                         {
-                            ((MainActivity)getActivity()).doCommuForState(APP_HUMID_AU);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
-
-                            if (result_s.equals("S"))
-                            {
-                                //auto off
-                                //humBtnAuto.setTextColor(getResources().getColor(R.color.gray));
-                                humAutoState = 0;
-                            }
+                            //auto - on
+                            //humBtnAuto.setImageResource(R.drawable.);
+                            humAutoState = 1;
                         }
-                        break;
                     }
                     else
                     {
-                        logMessege("계정이 등록되지 않았습니다");
-                        break;
-                    }
-                }
+                        ((MainActivity)getActivity()).doCommuForState(APP_HUMID_AU);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                logMessege("WiFi가 활성화되지 않았습니다.");
-                break;
+                        if (result_s.equals("S"))
+                        {
+                            //auto off
+                            //humBtnAuto.setImageResource(R.drawable.);
+                            humAutoState = 0;
+                        }
+                    }
+                    break;
+                }
+                else
+                {
+                    logMessege("계정이 등록되지 않았습니다");
+                    break;
+                }
 
             case R.id.motor_btn:
-                if (wifiManager.isWifiEnabled())
+                if(!pref.getString("id", "").equals(""))
                 {
-                    if(!pref.getString("id", "").equals(""))
+                    if(motorState == 0)
                     {
-                        if(motorState == 0)
-                        {
-                            ((MainActivity)getActivity()).doCommuForState(APP_MOTOR_LE);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
+                        ((MainActivity)getActivity()).doCommuForState(APP_MOTOR_LE);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                            if (result_s.equals("S"))
-                            {
-                                //motor resource to add
-                                //motorBtn.setText("LEFT");
-                                motorState = 1;
-                            }
-                        }
-                        else
+                        if (result_s.equals("S"))
                         {
-                            ((MainActivity)getActivity()).doCommuForState(APP_MOTOR_RI);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
-
-                            if (result_s.equals("S"))
-                            {
-                                //source need to add
-                                //motorBtn.setText("RIGHT");
-                                motorState = 0;
-                            }
+                            //motor resource to add
+                            //motorBtn.setText("LEFT");
+                            //motorBtn.setImageResource(R.drawable.);
+                            motorState = 1;
                         }
-                        break;
                     }
                     else
                     {
-                        logMessege("계정이 등록되지 않았습니다");
-                        break;
+                        ((MainActivity)getActivity()).doCommuForState(APP_MOTOR_RI);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
+
+                        if (result_s.equals("S"))
+                        {
+                            //source need to add
+                            //motorBtn.setText("RIGHT");
+                            //motorBtn.setImageResource(R.drawable.);
+                            motorState = 0;
+                        }
                     }
+                    break;
+                }
+                else
+                {
+                    logMessege("계정이 등록되지 않았습니다");
+                    break;
                 }
 
-                logMessege("WiFi가 활성화되지 않았습니다.");
-                break;
             case R.id.motor_btn_power:
-                if (wifiManager.isWifiEnabled())
+                if(!pref.getString("id", "").equals(""))
                 {
-                    if(!pref.getString("id", "").equals(""))
+                    if(motorPowerState == 0)
                     {
-                        if(motorPowerState == 0)
-                        {
-                            ((MainActivity)getActivity()).doCommuForState(APP_MOTOR_OF);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
+                        ((MainActivity)getActivity()).doCommuForState(APP_MOTOR_OF);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                            if (result_s.equals("S"))
-                            {
-                                //motor source
-                                //motorBtnPower.setText("ON");
-                                //motorBtnPower.setTextColor(getResources().getColor(R.color.colorAccent));
-                                motorPowerState = 1;
-                            }
-                        }
-                        else
+                        if (result_s.equals("S"))
                         {
-                            ((MainActivity)getActivity()).doCommuForState(APP_MOTOR_OF);
-                            result_s = ((MainActivity)getActivity()).isSuccess;
-
-                            if (result_s.equals("S"))
-                            {
-                                //motor source to addd
-                                //motorBtnPower.setText("OFF");
-                               // motorBtnPower.setTextColor(getResources().getColor(R.color.gray));
-                                motorPowerState = 0;
-                            }
+                            //motor source
+                            //motorBtnPower.setImageResource(R.drawable.);
+                            motorPowerState = 1;
                         }
-                        break;
                     }
                     else
                     {
-                        logMessege("계정이 등록되지 않았습니다");
-                        break;
-                    }
-                }
+                        ((MainActivity)getActivity()).doCommuForState(APP_MOTOR_OF);
+                        result_s = ((MainActivity)getActivity()).isSuccess;
 
-                logMessege("WiFi가 활성화되지 않았습니다.");
-                break;
+                        if (result_s.equals("S"))
+                        {
+                            //motor source to addd
+                            //motorBtnPower.setImageResource(R.drawable.);
+                            motorPowerState = 0;
+                        }
+                    }
+                    break;
+                }
+                else
+                {
+                    logMessege("계정이 등록되지 않았습니다");
+                    break;
+                }
 
             case R.id.web_button:
-                if (wifiManager.isWifiEnabled())
+                if(!pref.getString("id", "").equals(""))
                 {
-                    if(!pref.getString("id", "").equals(""))
-                    {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://google.com"));
-                        startActivity(intent);
-                        break;
-                    }
-                    else
-                    {
-                        logMessege("계정이 등록되지 않았습니다");
-                        break;
-                    }
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://google.com"));
+                    startActivity(intent);
+                    break;
                 }
-
-            logMessege("WiFi가 활성화되지 않았습니다.");
-            break;
+                else
+                {
+                    logMessege("계정이 등록되지 않았습니다");
+                    break;
+                }
         }
     }
 
