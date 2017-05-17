@@ -18,7 +18,8 @@ public class ModuleMain implements SerialPortEventListener {
  
     private static final String PORT_NAMES[] = {   
           "/dev/tty.usbserial-A9007UX1",//MAX OS X
-          "/dev/ttyACM0" ,//Linux
+          //"/dev/ttyACM0" ,//Linux
+          "/dev/ttyS33",
             "COM6", // Windows 
             };
     
@@ -174,7 +175,10 @@ public class ModuleMain implements SerialPortEventListener {
                 		ret += "/";
                 }
                 
-                payload = ret;                
+                payload = ret;
+                if(payload.length() <= 1){
+                	return;
+                }
                 ModuleCoapSend coap = new ModuleCoapSend(method, uri, payload);
                 
                 //통신받은걸 아두이노로 전송
