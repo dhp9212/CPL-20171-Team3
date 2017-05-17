@@ -21,6 +21,7 @@
 #define RELAY_LIGHT_OFF "APP_LIGHT_OF00000"//릴레이 전등
 #define RELAY_LIGHT_AUTO "APP_LIGHT_AU00000"//릴레이 전등
 #define num 17
+#define FREQUENCY 15 //아두이노 ->라즈베리 빈도수 조절
 
 //////////////////////////////////////////////////////////////////////////////////
 int moter = 0;
@@ -35,6 +36,10 @@ int incomingByte = 0;
 //릴레이모듈 : digital 10
 int hitte= 10;
 
+
+//아두이노 -> 라즈베리 빈도수 조절
+int frequency = 0;
+
 //////////////////////////////////////////////////////////////////////////////////
 void setup(){
   Serial.begin(9600);
@@ -45,20 +50,22 @@ void setup(){
 }
 void loop(){
   /******************************** 아두이노 -> 라즈베리 *************************************************/
-  // 1번 온도, 습도 값 받는곳////////////////////////////////////////////////////
-  float h = dht.readHumidity();
-  // Read temperature as Celsius
-  float t = dht.readTemperature();  //섭씨
-  // Read temperature as Fahrenheit
-  float f = dht.readTemperature(true); //화씨
-
-  // 2번 온도 값 받는곳 /////////////////////////////////////////////////////////
-  t2.MeasureTemp();
-  
-  // 온도값 출력 ////////////////////////////////////////////////////////////////
-  printT1(h,t);
-  printT2(t2);
-  
+  if(frequency >= FREQUENCY){
+      frequency = 0;
+      // 1번 온도, 습도 값 받는곳////////////////////////////////////////////////////
+      float h = dht.readHumidity();
+      // Read temperature as Celsius
+      float t = dht.readTemperature();  //섭씨
+      // Read temperature as Fahrenheit
+      float f = dht.readTemperature(true); //화씨
+    
+      // 2번 온도 값 받는곳 /////////////////////////////////////////////////////////
+      t2.MeasureTemp();
+      
+      // 온도값 출력 ////////////////////////////////////////////////////////////////
+      printT1(h,t);
+      printT2(t2);
+  }
   /********************************** 라즈베리 -> 아두이노 ***************************************************/
   char input[100] = {};
   String temp="";
@@ -84,7 +91,7 @@ void loop(){
   
   /***********************************************************************************************************/
 
-
+  frequency = frequency + 1; //빈도수 관련
   delay(2000);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +138,7 @@ void control(String temp){
 
 void printT1(float h, float t){
     if(isnan(h) || isnan(t)){
-    Serial.println("Failed to read from DHT sensor!");
+    //Serial.println("Failed to read from DHT sensor!");
     return;
   }
   /*test
