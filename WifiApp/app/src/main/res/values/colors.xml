@@ -8,4 +8,6 @@
     <color name="skyblue">#99ccff</color>
     <color name="blue">#4c8eff</color>
     <color name="gray">#666666</color>
+    <color name="green">#7be150</color>
+    <color name="gray_semi">#c9c9c9</color>
 </resources>

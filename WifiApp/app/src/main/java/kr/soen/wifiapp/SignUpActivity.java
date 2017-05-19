@@ -11,15 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
     public static final int ServerPort = 5000;
-    public static final String ServerIP = "54.71.172.224";
-    //public static final String ServerIP = "14.46.3.32";
+    //public static final String ServerIP = "54.71.172.224";
+    public static final String ServerIP = "14.46.3.96";
 
     public static final String REQUEST_SIGNUP = "4";
     public static final String COLSE = "5";
@@ -182,8 +181,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 mmOutStream.flush();
 
                 mmInStream.close();
+                mmInStream = null;
                 mmOutStream.close();
+                mmOutStream = null;
                 socket.close();
+                socket = null;
 
                 String result = "S";
 

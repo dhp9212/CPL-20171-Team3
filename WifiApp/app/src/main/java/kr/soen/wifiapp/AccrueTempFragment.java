@@ -1,18 +1,19 @@
 package kr.soen.wifiapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -21,7 +22,6 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,9 +36,8 @@ public class AccrueTempFragment extends Fragment {
     float[] hot_accrue_tempTokens = new float[8];
     float[] cool_accrue_tempTokens = new float[8];
 
-    TextView chartTitle;
     LineChart accruetempChart;
-    LineData accruetempData;
+    WebView webView;
 
     public AccrueTempFragment() {}
 
@@ -51,11 +50,12 @@ public class AccrueTempFragment extends Fragment {
     }
 
     @Override
+    @SuppressLint( "SetJavaScriptEnabled" )
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.fragment_accrue_temp, container, false);
 
-        chartTitle = (TextView)layout.findViewById(R.id.line_chart_title) ;
+        TextView chartTitle = (TextView)layout.findViewById(R.id.line_chart_title) ;
         chartTitle.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
 
         accruetempChart = (LineChart) layout.findViewById(R.id.accrue_temp_chart);
@@ -73,7 +73,20 @@ public class AccrueTempFragment extends Fragment {
         accruetempChart.setScaleEnabled(false);
         accruetempChart.getLegend().setEnabled(false);
 
+        webView = (WebView)layout.findViewById(R.id.webview);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("http://www.google.com");
+        webView.setWebViewClient(new WebViewClientClass());
+
         return layout;
+    }
+
+    private class WebViewClientClass extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
     }
 
     @Override
@@ -144,7 +157,7 @@ public class AccrueTempFragment extends Fragment {
         coolzoneDataSet.setValueTextSize(15);
         tempDataSet.add(coolzoneDataSet);
 
-        accruetempData = new LineData(tempDataSet);
+        LineData accruetempData = new LineData(tempDataSet);
         accruetempData.setValueTextColor(getResources().getColor(R.color.white));
         accruetempData.setValueTypeface(Typeface.createFromAsset(getActivity().getAssets(), "NanumBarunpenR.ttf"));
         accruetempChart.setData(accruetempData);

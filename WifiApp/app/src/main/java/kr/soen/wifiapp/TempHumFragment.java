@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.data.BarData;
@@ -20,7 +19,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.triggertrap.seekarc.SeekArc;
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -127,7 +125,19 @@ public class TempHumFragment extends Fragment {
                 isfirst = false;
             }
             else {
-                currenttempChart.animateY(2000);
+                setValue(((MainActivity)getActivity()).currentTempHumData);
+                setGraphData(current_temp[0], current_temp[1], hum[0], hum[1]);
+            }
+        }
+        else
+        {
+            if(!isfirst)
+            {
+                if(!pref.getString("id", "").equals(""))
+                {
+                    Log.d("SOCKET", "서버 연결 요청 _ TempHumFragment");
+                    ((MainActivity)getActivity()).doCommu(REQUEST_CURRENT_TEMP_HUM);
+                }
             }
         }
     }

@@ -1,12 +1,8 @@
 package kr.soen.wifiapp;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -19,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -27,36 +22,31 @@ import java.net.Socket;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     public static final int ServerPort = 5000;
     public static final String ServerIP = "54.71.172.224";
-    //public static final String ServerIP = "14.46.3.8";
+    //public static final String ServerIP = "14.46.3.96";
 
     public static final String REQUEST_CURRENT_TEMP_HUM = "1";
     public static final String REQUEST_ACCRUE_TEMP = "2";
     public static final String REQUEST_STATE = "3";
     public static final String COLSE = "5";
 
-    Socket socket;
+    Socket socket = null;
     public InputStream mmInStream = null;
     public OutputStream mmOutStream = null;
     String taskString;
     boolean isConnect = false;
-    boolean isFirstControlConnect = true;
 
     ViewPager vp;
     LinearLayout ll;
     SharedPreferences pref;
     BackPressCloseHandler backPressCloseHandler;
 
-    AlertDialog.Builder dialog;
     Toast logMsg;
 
     Object result;
-    Object result_s;
 
     String currentTempHumData = "0/0/0/0";
     String accrueTempData = "0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0";
     String stateData = "0/0/0/0/0/0/0/0";
-
-    String isSuccess;
 
 
     @Override
@@ -73,24 +63,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         vp = (ViewPager)findViewById(R.id.vp);
         ll = (LinearLayout)findViewById(R.id.ll);
 
-        TextView currenttemphumTab = (TextView)findViewById(R.id.tab_current_temp_hum);
-        currenttemphumTab.setTypeface(Typeface.createFromAsset(getAssets(), "NanumBarunpenR.ttf"));
-        TextView accruetempTab = (TextView)findViewById(R.id.tab_accrue_temp);
-        accruetempTab.setTypeface(Typeface.createFromAsset(getAssets(), "NanumBarunpenR.ttf"));
-        TextView controlTab = (TextView)findViewById(R.id.tab_control);
-        controlTab.setTypeface(Typeface.createFromAsset(getAssets(), "NanumBarunpenR.ttf"));
+        TextView tab1 = (TextView)findViewById(R.id.tab_1);
+        TextView tab2 = (TextView)findViewById(R.id.tab_2);
 
         vp.setAdapter(new pagerAdapter(getSupportFragmentManager()));
         vp.setCurrentItem(0);
 
-        currenttemphumTab.setOnClickListener(this);
-        currenttemphumTab.setTag(0);
-        accruetempTab.setOnClickListener(this);
-        accruetempTab.setTag(1);
-        controlTab.setOnClickListener(this);
-        controlTab.setTag(2);
+        tab1.setOnClickListener(this);
+        tab1.setTag(0);
+        tab2.setOnClickListener(this);
+        tab2.setTag(1);
 
-        currenttemphumTab.setSelected(true);
+        tab1.setSelected(true);
 
         vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
@@ -101,9 +85,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onPageSelected(int position)
             {
                 int i = 0;
-                while(i<3)
+                while(i < 2)
                 {
-                    if(position==i)
+                    if(position == i)
                     {
                         ll.findViewWithTag(i).setSelected(true);
                     }
@@ -119,31 +103,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onPageScrollStateChanged(int state) {}
         });
 
-        ImageButton settingBtn = (ImageButton)findViewById(R.id.setting_btn);
-        settingBtn.setOnClickListener(this);
+        ImageButton controlBtn = (ImageButton)findViewById(R.id.control_btn);
+        controlBtn.setOnClickListener(this);
+
+        ImageButton userBtn = (ImageButton)findViewById(R.id.user_btn);
+        userBtn.setOnClickListener(this);
 
         backPressCloseHandler = new BackPressCloseHandler(this);//뒤로가기 handler
-    }
-
-    class WRhandler extends Handler
-    {
-        @Override
-        public void handleMessage(Message msg)
-        {
-            super.handleMessage(msg);
-
-            switch (msg.what)
-            {
-                case 1:
-                    logMessege("WiFi가 비활성화 되었습니다.");
-                    dialog.show();
-                    break;
-
-                case 2:
-                    logMessege("WiFi가 활성화되었습니다.");
-                    break;
-            }
-        }
     }
 
     public void doCommu(String msg)
@@ -174,27 +140,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e)
         {
             logMessege(e.toString());
-        }
-    }
-
-    public void doCommuForState(String msg)
-    {
-        try {
-            result_s = new CommuTask().execute(msg).get();
-
-            if (result_s instanceof Exception)
-            {
-                logMessege(result_s.toString());
-                isSuccess = "F";
-            }
-            else
-            {
-                isSuccess = result_s.toString();
-            }
-        } catch (Exception e)
-        {
-            logMessege(e.toString());
-            isSuccess = "F";
         }
     }
 
@@ -255,8 +200,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mmOutStream.flush();
 
                 mmInStream.close();
+                mmInStream = null;
                 mmOutStream.close();
+                mmOutStream = null;
                 socket.close();
+                socket = null;
+
+                isConnect = false;
 
                 String result = "S";
 
@@ -280,9 +230,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v)
     {
-        if(v.getId() == R.id.setting_btn)
+        if(v.getId() == R.id.user_btn)
         {
             Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+            startActivity(intent);
+        }
+        else if(v.getId() == R.id.control_btn)
+        {
+            if (!pref.getString("id", "").equals(""))
+            {
+                Log.d("SOCKET", "서버 연결 요청 _ Main");
+                doCommu(REQUEST_STATE);
+                doClose();
+            }
+
+            Intent intent = new Intent(MainActivity.this, ControlActivity.class);
+            intent.putExtra("state", stateData);
             startActivity(intent);
         }
         else
@@ -290,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int tag = (int)v.getTag();
 
             int i = 0;
-            while(i < 3)
+            while(i < 2)
             {
                 if(tag == i)
                 {
@@ -322,8 +285,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return new TempHumFragment();
                 case 1:
                     return new AccrueTempFragment();
-                case 2:
-                    return new ControlFragment();
             }
             return null;
         }
@@ -331,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public int getCount()
         {
-            return 3;
+            return 2;
         }
     }
 
