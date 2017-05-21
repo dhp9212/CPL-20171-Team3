@@ -27,7 +27,6 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     public static final String ServerIP = "54.71.172.224";
     //public static final String ServerIP = "14.46.3.96";
 
-    public static final String REQUEST_STATE = "3";
     public static final String COLSE = "5";
 
     public static final String APP_LIGHT_ON = "10";
