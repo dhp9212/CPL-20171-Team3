@@ -29,6 +29,7 @@ public class ModuleMain implements SerialPortEventListener {
     private static final int TIME_OUT = 2000; 
     private static final int DATA_RATE = 9600;
     
+    private static ModuleMain main;
     
     // for chunk control
     private final int max_chunk = 10;
@@ -77,6 +78,8 @@ public class ModuleMain implements SerialPortEventListener {
             input = serialPort.getInputStream(); 
             output = serialPort.getOutputStream(); 
          
+            System.out.println("[ info ] :: " + input);
+            System.out.println("[ info ] :: " + output);
             serialPort.addEventListener(this); 
             serialPort.notifyOnDataAvailable(true);
 
@@ -198,11 +201,15 @@ public class ModuleMain implements SerialPortEventListener {
     	 
          	byte[] byteArray = message.getBytes();
          	try {
+         		System.out.println(input);
+         		System.out.println(output);
 				output.write(byteArray);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+    	
+    	System.out.println(":: "+message);
     }
     
     public static void main(String[] args) throws Exception {
@@ -213,7 +220,7 @@ public class ModuleMain implements SerialPortEventListener {
     		System.exit(0);
     	}
     	*/
-        ModuleMain main = new ModuleMain(); 
+        main = new ModuleMain(); 
         
         ModuleCoapServer server = new ModuleCoapServer();
         server.addEndpoints();
@@ -223,4 +230,18 @@ public class ModuleMain implements SerialPortEventListener {
         System.out.println("Module Accept Started");
         
     } 
+    
+    public InputStream getInput(){
+    	return input;
+    }
+    public OutputStream getOutput(){
+    	return output;
+    }
+    
+  
+	public static ModuleMain getModule() {
+		// TODO Auto-generated method stub
+		return main;
+	}
+
 }

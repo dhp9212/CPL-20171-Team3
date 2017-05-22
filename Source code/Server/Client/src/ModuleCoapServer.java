@@ -46,20 +46,26 @@ public class ModuleCoapServer extends CoapServer{
 		
 		@Override
 		public void handleGET(CoapExchange exchange){
-			// when server receive "GET" message
+			// when server receive "PUT" message
 			
 			byte[] payload = exchange.getRequestPayload();
 			
+			ModuleMain main = ModuleMain.getModule();
+			
 			try{
 				String message = new String(payload, "UTF-8");
+				main.push(message);
+				
 				/**/
 				System.out.println(message);
 				/**/
+				exchange.respond("OK");
+				
 			}catch(Exception e){
 				e.printStackTrace();
+				exchange.respond(BAD_REQUEST, "Invalid Payload");
 			}
-
-			exchange.respond("Success connection");
+			
 		}
 		
 		@Override
@@ -68,7 +74,7 @@ public class ModuleCoapServer extends CoapServer{
 			
 			byte[] payload = exchange.getRequestPayload();
 			
-			ModuleMain main = new ModuleMain();
+			ModuleMain main = ModuleMain.getModule();
 			
 			try{
 				String message = new String(payload, "UTF-8");
