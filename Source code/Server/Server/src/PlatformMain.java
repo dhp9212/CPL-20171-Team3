@@ -37,8 +37,9 @@ public class PlatformMain {
 	 public static final String APP_MOTOR_OF = "42";
 	 
 	 
-	 private static String method = "PUT";
-	 private static String uri = "coap://27.35.109.109:5683/Module";
+	 private static String method = "GET";
+	 private static String uri = "coap://211.224.68.187:5683/Module";
+	 //private static String uri = "coap://27.35.109.109:5683/Module";
 	 //private static String uri = "coap://192.168.10.102:5683/Module";
 	 //private static String uri = "coap://54.71.172.224:5683/Platform"; // pi address
 	 private static String payload = "";
@@ -91,7 +92,7 @@ public class PlatformMain {
 	            int n;
 	            
 	            Database db = new Database();
-	            PlatformCoapSend send;
+	            PlatformCoapSend send = null;
 	            
 	            while ((n = wfIn.read(buff)) > 0) 
 	            {  
@@ -300,10 +301,11 @@ public class PlatformMain {
 	            	}
 	            	else if(dataArray[0].equals(APP_MOTOR_LE))
 	            	{
-	            		System.out.println("Client's request : humidifierOn");
+	            		System.out.println("Client's request : Motor left");
 	            		
 	            		
 	            		payload = "APP_MOTOR_LE00000";
+	            		System.out.println("method: " + method + " uri : " + uri + " payload : " + payload);
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
 	            		
@@ -315,9 +317,10 @@ public class PlatformMain {
 	            	}
 	            	else if(dataArray[0].equals(APP_MOTOR_RI))
 	            	{
-	            		System.out.println("Client's request : humidifierOFF");
+	            		System.out.println("Client's request : Motor right");
 	            		
 	            		payload = "APP_MOTOR_RI00000";
+	            		System.out.println("method: " + method + " uri : " + uri + " payload : " + payload);
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
 	            		
@@ -329,9 +332,10 @@ public class PlatformMain {
 	            	}
 	            	else if(dataArray[0].equals(APP_MOTOR_OF))
 	            	{
-	            		System.out.println("Client's request : humidifierAuto");
+	            		System.out.println("Client's request : Motor off");
 	            		
 	            		payload = "APP_MOTOR_OF00000";
+	            		System.out.println("method: " + method + " uri : " + uri + " payload : " + payload);
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
 	            		

@@ -59,13 +59,11 @@ public class Database {
 		String[] splt = payload.split("/");
 		
 		for(int i = 0; i < splt.length; i++){
-			
+
 			query = "INSERT INTO SENSOR_DATA VALUES(";
-			query += "'" + splt[i].substring(4, 11) + "',";
-			query += Float.parseFloat(splt[i].substring(13, 16));
+			query += "'" + splt[i].substring(4, 12) + "',";
+			query += Float.parseFloat(splt[i].substring(13, 17));
 			query += ", now());";
-			
-			System.out.println(query);
 			
 			try{
 				state.executeUpdate(query);

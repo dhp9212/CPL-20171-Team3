@@ -19,8 +19,7 @@ public class PlatformCoapServer extends CoapServer{
 	
 	private static final int COAP_PORT = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
 	
-	public static final String RAW = "00";
-	
+
 	
 	public void addEndpoints(){
 		for(InetAddress addr : EndpointManager.getEndpointManager().getNetworkInterfaces()){
@@ -75,7 +74,9 @@ public class PlatformCoapServer extends CoapServer{
 			
 			try{
 				String message = new String(payload, "UTF-8");
+				
 				db.rawInsert(message);
+				
 				/**/
 				System.out.println(message);
 				/**/
