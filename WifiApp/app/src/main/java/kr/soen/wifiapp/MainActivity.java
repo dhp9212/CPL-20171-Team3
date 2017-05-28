@@ -147,7 +147,8 @@ public class MainActivity extends AppCompatActivity {
     public void doCommu(String msg)
     {
         try {
-            result = new CommuTask().execute(msg).get();
+            String data = msg + "/" + id;
+            result = new CommuTask().execute(data).get();
 
             if (result instanceof Exception)
             {
