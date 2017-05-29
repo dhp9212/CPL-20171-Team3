@@ -35,7 +35,8 @@ int incomingByte = 0;
 
 //릴레이모듈 : digital 10
 int hitte= 10;
-
+int humid = 11;
+int light = 12;
 
 //아두이노 -> 라즈베리 빈도수 조절
 int frequency = 0;
@@ -109,28 +110,21 @@ void control(String temp){
   }
   //가습기 제어
   else if(temp.equals(RELAY_HUMID_ON)){
-    
+    igitalWrite(humid,LOW);
   }else if(temp.equals(RELAY_HUMID_OFF)){
-    
-  }else if(temp.equals(RELAY_HUMID_AUTO)){
-    
+    digitalWrite(humid,HIGH);
   }
   //히터 제어
   else if(temp.equals(RELAY_HITTE_ON)){
     digitalWrite(hitte,LOW);
   }else if(temp.equals(RELAY_HITTE_OFF)){
     digitalWrite(hitte,HIGH);
-  }else if(temp.equals(RELAY_HITTE_AUTO)){
-    //auto 함수를 추가할것
-    digitalWrite(hitte,LOW);
   }
   //전등 제어
   else if(temp.equals(RELAY_LIGHT_ON)){
-    
+     digitalWrite(light,LOW);
   }else if(temp.equals(RELAY_LIGHT_OFF)){
-    
-  }else if(temp.equals(RELAY_LIGHT_AUTO)){
-    
+     digitalWrite(light,HIGH);
   }
 }
 
