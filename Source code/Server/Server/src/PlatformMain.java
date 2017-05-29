@@ -18,7 +18,8 @@ public class PlatformMain {
 	 public static final String REQUEST_ACCRUE_TEMP = "2";
 	 public static final String REQUEST_STATE = "3";
 	 public static final String REQUEST_SIGNUP = "4";
-	 public static final String COLSE = "5";
+	 public static final String REQUEST_LOGIN = "5";
+	 public static final String COLSE = "6";
 	 
 	 public static final String APP_LIGHT_ON = "10";
 	 public static final String APP_LIGHT_OF = "11";
@@ -111,9 +112,11 @@ public class PlatformMain {
 	            	if(dataArray[0].equals(REQUEST_CURRENT_TEMP_HUM))
 	            	{
 	            		System.out.println("Client's request : current temp and humidity");
-	                    	
-	                    String response = "30/24/40/37";//hotzone current temp/coolzone current temp/current humidity/average humidity
-	                    System.out.println("Sending response :" + response);
+	                    
+	            		String response = db.select(REQUEST_CURRENT_TEMP_HUM, "");
+	                    //String response = "30/24/40/37";//hotzone current temp/coolzone current temp/current humidity/average humidity
+	                    
+	            		System.out.println("Sending response :" + response);
 	                    
 	                    wfOut.write(response.getBytes("UTF-8"));
 	                    wfOut.flush();
@@ -125,8 +128,8 @@ public class PlatformMain {
 	            		// TODO: modifiy  just select from DB
 	            		// select
 	            		
-	            		
-	                    String response = "30/29/28/30/31/32/28/30/24/25/26/25/24/25/23/22";
+	            		String response = db.select(REQUEST_ACCRUE_TEMP, "");
+	                    //String response = "30/29/28/30/31/32/28/30/24/25/26/25/24/25/23/22";
 	                    //hotzone temp(-21 hour)/hotzone temp(-16 hour)/.../hotzone temp(-0 hour) : 8 temps
 	                    //coolzone temp(-21 hour)/coolzone temp(-16 hour)/.../coolzone temp(-0 hour) : 8 temps
 	                    //total : 16 temps
@@ -141,7 +144,9 @@ public class PlatformMain {
 	            	{
 	            		System.out.println("Client's request : state");
 	            		
-	            		String response = "0/0/0/0/0/0/0/0";
+	            		
+	            		String response = db.select(REQUEST_STATE, "");
+	            		//String response = "0/0/0/0/0/0/0/0";
 	            		//light : on -> 1, off -> 0/auto on -> 1, auto off -> 0
 	            		//hitter : on -> 1, off -> 0/auto on -> 1, auto off -> 0
 	            		//humidifier : on -> 1, off -> 0/auto on -> 1, auto off -> 0
@@ -165,12 +170,32 @@ public class PlatformMain {
 	            		wfOut.write(response.getBytes("UTF-8"));  
 		                wfOut.flush();
 	                }
+	            	else if(dataArray[0].equals(REQUEST_LOGIN))
+	            	{
+	            		System.out.println("Client's request : login");
+	            		          		
+	            		String id = dataArray[1];
+	            		String password = dataArray[2];
+	            		//login
+	            		
+	            		String response = db.select(REQUEST_LOGIN, id + "/" + password);
+	            		//if wrong id/password, String response = "F_login";
+	            		//if it is another error, String response = "F";
+	            		//String response = "S";
+	            		
+	            		System.out.println("Sending response :" + response);
+	            		
+	            		wfOut.write(response.getBytes("UTF-8"));  
+		                wfOut.flush();
+	                }
 	            	else if(dataArray[0].equals(APP_LIGHT_ON))
 	            	{
 	            		System.out.println("Client's request : lightOn");
 	            		
 	            		payload = "APP_LIGHT_ON00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
+	            		
+	            		db.insert(APP_LIGHT_ON, "APP_LIGHT_ON00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -185,6 +210,7 @@ public class PlatformMain {
 	            		payload = "APP_LIGHT_OF00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_LIGHT_OF00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -199,6 +225,7 @@ public class PlatformMain {
 	            		payload = "APP_LIGHT_AU00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_LIGHT_AU00000");
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -216,6 +243,7 @@ public class PlatformMain {
 	            		payload = "APP_HITTE_ON00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_HITTE_ON00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -230,6 +258,7 @@ public class PlatformMain {
 	            		payload = "APP_HITTE_OF00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_HITTE_OF00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -244,6 +273,7 @@ public class PlatformMain {
 	            		payload = "APP_HITTE_AU00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_HITTE_AU00000");
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -261,6 +291,7 @@ public class PlatformMain {
 	            		payload = "APP_HUMID_ON00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_HUMID_ON00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -275,6 +306,7 @@ public class PlatformMain {
 	            		payload = "APP_HUMID_OF00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_HUMID_OF00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -289,6 +321,7 @@ public class PlatformMain {
 	            		payload = "APP_HUMID_AU00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_HUMID_AU00000");
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -308,6 +341,7 @@ public class PlatformMain {
 	            		System.out.println("method: " + method + " uri : " + uri + " payload : " + payload);
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_MOTOR_LE00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -323,6 +357,7 @@ public class PlatformMain {
 	            		System.out.println("method: " + method + " uri : " + uri + " payload : " + payload);
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_MOTOR_RI00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -338,6 +373,7 @@ public class PlatformMain {
 	            		System.out.println("method: " + method + " uri : " + uri + " payload : " + payload);
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
+	            		db.insert(APP_LIGHT_ON, "APP_MOTOR_OF00000");
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -377,6 +413,17 @@ public class PlatformMain {
 	 }
 
 	 public static void main(String[] args){
+		 
+		 if(args.length != 1){
+			 System.out.println("Usage : java -jar FILENAME.jar MODULE_IPADDRESS");
+			 return;
+		 }
+		 
+		 uri = "coap://" + args[0] + ":5683/Module";
+		 
+		 System.out.println("args0 = " + args[0]);
+		 System.out.println("uri = " + uri);
+		 
 			try{
 				PlatformCoapServer server = new PlatformCoapServer();
 				server.addEndpoints();
