@@ -128,8 +128,8 @@ public class PlatformMain {
 	            		// TODO: modifiy  just select from DB
 	            		// select
 	            		
-	            		String response = db.select(REQUEST_ACCRUE_TEMP, "");
-	                    //String response = "30/29/28/30/31/32/28/30/24/25/26/25/24/25/23/22";
+	            		//String response = db.select(REQUEST_ACCRUE_TEMP, "");
+	                    String response = "30/29/28/30/31/32/28/30/24/25/26/25/24/25/23/22";
 	                    //hotzone temp(-21 hour)/hotzone temp(-16 hour)/.../hotzone temp(-0 hour) : 8 temps
 	                    //coolzone temp(-21 hour)/coolzone temp(-16 hour)/.../coolzone temp(-0 hour) : 8 temps
 	                    //total : 16 temps
@@ -195,7 +195,7 @@ public class PlatformMain {
 	            		payload = "APP_LIGHT_ON00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_LIGHT_ON00000");
+	            		db.insertControl(APP_LIGHT_ON, "APP_LIGHT_ON00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -210,7 +210,7 @@ public class PlatformMain {
 	            		payload = "APP_LIGHT_OF00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_LIGHT_OF00000");
+	            		db.insertControl(APP_LIGHT_OF, "APP_LIGHT_OF00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -225,7 +225,7 @@ public class PlatformMain {
 	            		payload = "APP_LIGHT_AU00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_LIGHT_AU00000");
+	            		db.insertControl(APP_LIGHT_AU, "APP_LIGHT_AU00000");
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -243,7 +243,7 @@ public class PlatformMain {
 	            		payload = "APP_HITTE_ON00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_HITTE_ON00000");
+	            		db.insertControl(APP_HITTE_ON, "APP_HITTE_ON00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -258,7 +258,7 @@ public class PlatformMain {
 	            		payload = "APP_HITTE_OF00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_HITTE_OF00000");
+	            		db.insertControl(APP_HITTE_OF, "APP_HITTE_OF00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -273,7 +273,7 @@ public class PlatformMain {
 	            		payload = "APP_HITTE_AU00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_HITTE_AU00000");
+	            		db.insertControl(APP_HITTE_AU, "APP_HITTE_AU00000");
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -291,7 +291,7 @@ public class PlatformMain {
 	            		payload = "APP_HUMID_ON00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_HUMID_ON00000");
+	            		db.insertControl(APP_HUMID_ON, "APP_HUMID_ON00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -306,7 +306,7 @@ public class PlatformMain {
 	            		payload = "APP_HUMID_OF00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_HUMID_OF00000");
+	            		db.insertControl(APP_HUMID_OF, "APP_HUMID_OF00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -321,7 +321,7 @@ public class PlatformMain {
 	            		payload = "APP_HUMID_AU00000";
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_HUMID_AU00000");
+	            		db.insertControl(APP_HUMID_AU, "APP_HUMID_AU00000");
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0
@@ -341,7 +341,7 @@ public class PlatformMain {
 	            		System.out.println("method: " + method + " uri : " + uri + " payload : " + payload);
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_MOTOR_LE00000");
+	            		db.insertControl(APP_MOTOR_LE, "APP_MOTOR_LE00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -357,7 +357,7 @@ public class PlatformMain {
 	            		System.out.println("method: " + method + " uri : " + uri + " payload : " + payload);
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_MOTOR_RI00000");
+	            		db.insertControl(APP_MOTOR_RI, "APP_MOTOR_RI00000");
 	            		
 	            		String response = "S";//failed : F
 	            		System.out.println("Sending response :" + response);
@@ -373,7 +373,7 @@ public class PlatformMain {
 	            		System.out.println("method: " + method + " uri : " + uri + " payload : " + payload);
 	            		send = new PlatformCoapSend(method, uri, payload);
 	            		
-	            		db.insert(APP_LIGHT_ON, "APP_MOTOR_OF00000");
+	            		db.insertControl(APP_MOTOR_OF, "APP_MOTOR_OF00000");
 	            		
 	            		//if state is 0 in DB, change state to 1
 	            		//if state is 1 in DB, change state to 0

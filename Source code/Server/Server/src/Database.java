@@ -65,7 +65,8 @@ public class Database {
 		query = "";
 		
 		if(flag.equals(REQUEST_LOGIN)){
-			query += "SELECT ID, PASSWORD FROM ACCOUNT WHERE";
+			query = "";
+			query += "SELECT ID, PWD FROM ACCOUNT WHERE ";
 			query += "ID = '" + splt[0] + "' AND ";
 			query += "PWD = '" + splt[1] + "';";
 
@@ -73,8 +74,9 @@ public class Database {
 				
 				System.out.println(query);
 				result = state.executeQuery(query);
-				if(!result.wasNull()){
-					ret = "F_LOGIN";
+				
+				if(!result.isBeforeFirst()){
+					ret = "F_login";
 				}
 				else{
 					ret = "S";
@@ -118,14 +120,14 @@ public class Database {
 			
 			for(int i = 0; i < 8; i++){
 			
-				query += "SELECT EXTRACT(HOUR FROM RCV_DATE) AS RCV_DATE, AVG(SENSOR_VALUE) AS SENSOR_VALUE ";
+				query += "(SELECT EXTRACT(HOUR FROM RCV_DATE) AS RCV_DATE, AVG(SENSOR_VALUE) AS SENSOR_VALUE ";
 				query += "FROM SENSOR_DATA ";
 				query += "WHERE SENSOR_TYPE = 'TEMP_ONE' AND ";
 				query += "EXTRACT(YEAR FROM RCV_DATE) = EXTRACT(YEAR FROM NOW()) AND ";
 				query += "EXTRACT(MONTH FROM RCV_DATE) = EXTRACT(MONTH FROM NOW()) AND ";
 				query += "EXTRACT(DAY FROM RCV_DATE) = EXTRACT(DAY FROM NOW()) AND ";
 				query += "EXTRACT(HOUR FROM RCV_DATE) = EXTRACT(HOUR FROM NOW()) - " + (3*i) + " ";
-				query += "GROUP BY EXTRACT(HOUR FROM RCV_DATE);";
+				query += "GROUP BY EXTRACT(HOUR FROM RCV_DATE))";
 				
 				if(i + 1 != 8)
 					query += " UNION ";
@@ -135,14 +137,14 @@ public class Database {
 			
 			for(int i = 0; i < 8; i++){
 				
-				query += "SELECT EXTRACT(HOUR FROM RCV_DATE) AS RCV_DATE, AVG(SENSOR_VALUE) AS SENSOR_VALUE ";
+				query += "(SELECT EXTRACT(HOUR FROM RCV_DATE) AS RCV_DATE, AVG(SENSOR_VALUE) AS SENSOR_VALUE ";
 				query += "FROM SENSOR_DATA ";
 				query += "WHERE SENSOR_TYPE = 'TEMP_TWO' AND ";
 				query += "EXTRACT(YEAR FROM RCV_DATE) = EXTRACT(YEAR FROM NOW()) AND ";
 				query += "EXTRACT(MONTH FROM RCV_DATE) = EXTRACT(MONTH FROM NOW()) AND ";
 				query += "EXTRACT(DAY FROM RCV_DATE) = EXTRACT(DAY FROM NOW()) AND ";
 				query += "EXTRACT(HOUR FROM RCV_DATE) = EXTRACT(HOUR FROM NOW()) - " + (3*i) + " ";
-				query += "GROUP BY EXTRACT(HOUR FROM RCV_DATE);";
+				query += "GROUP BY EXTRACT(HOUR FROM RCV_DATE))";
 				
 				if(i + 1 != 8)
 					query += " UNION ";
@@ -168,22 +170,24 @@ public class Database {
 		}
 		else if(flag.equals(REQUEST_STATE)){
 			query = "";
-			query += "SELECT LIGHT, LIGHT_AUTO, HITTE, HITTE_AUTO, HUMID, HUMID_AUTO, MOTOR, MOTOR_AUTO ";
+			query += "SELECT LIGHT, LIGHT_AUTO, HITTE, HITTE_AUTO, HUMID, HUMID_AUTO, MOTOR, MOTOR_ON ";
 			query += "FROM CURRENT_STATE";
 			
 			try {
 				System.out.println(query);
 				result = state.executeQuery(query);
 				
+				result.next();
+				
 				ret = "";
-				ret += result.getBoolean("LIGHT") + "/";
-				ret += result.getBoolean("LIGHT_AUTO") + "/";
-				ret += result.getBoolean("HITTE") + "/";
-				ret += result.getBoolean("HITTE_AUTO") + "/";
-				ret += result.getBoolean("HUMID") + "/";
-				ret += result.getBoolean("HUMID_AUTO") + "/";
-				ret += result.getBoolean("MOTOR") + "/";
-				ret += result.getBoolean("MOTOR_AUTO");
+				ret += result.getString("LIGHT") + "/";
+				ret += result.getString("LIGHT_AUTO") + "/";
+				ret += result.getString("HITTE") + "/";
+				ret += result.getString("HITTE_AUTO") + "/";
+				ret += result.getString("HUMID") + "/";
+				ret += result.getString("HUMID_AUTO") + "/";
+				ret += result.getString("MOTOR") + "/";
+				ret += result.getString("MOTOR_ON");
 				
 			}catch(SQLException e){
 				ret = "F";
@@ -224,6 +228,7 @@ public class Database {
 		String[] splt = payload.split("/");
 		
 		if(flag.equals(REQUEST_STATE)){
+			ret = "";
 			query = "INSERT INTO CONTROL_LOG VALUES(";
 			for(int i = 0; i < splt.length; i++){
 				query += "'" + splt[i] + "'";
@@ -234,6 +239,7 @@ public class Database {
 			query += ");";		
 		}
 		else if(flag.equals(REQUEST_SIGNUP)){
+			ret = "";
 			query = "INSERT INTO ACCOUNT VALUES(";
 			for(int i = 0; i < splt.length; i++){
 				query += "'" + splt[i] + "'";
@@ -243,8 +249,25 @@ public class Database {
 			query += ", now()"; // 현재 서버가 북미에 있기 때문에 북미 시간으로 들어간다. 프로시저 콜으로 될듯
 			query += ");";			 	 
 		}
+		
+		try{
+			System.out.println(query);
+			state.executeUpdate(query);
+			ret = "S";
+		}catch(Exception e){
+			e.printStackTrace();
+			ret = "F";
+		}
+		
+		return ret;
+	}
+	
+	public String insertControl(String flag, String payload){
+		String ret = "";
+		String[] splt = payload.split("/");
+		
 		/**********************************/
-		else if(flag.equals(APP_LIGHT_ON)){
+		if(flag.equals(APP_LIGHT_ON)){
 			query = "";
 			query = "INSERT INTO CONTROL_LOG VALUES(";
 			for(int i = 0; i < splt.length; i++){
@@ -420,9 +443,10 @@ public class Database {
 		/**********************************/
 		
 		
-		System.out.println(query);
+
 		
 		try{
+			System.out.println(query);
 			state.executeUpdate(query);
 			state.executeUpdate(query_update);
 			ret = "S";
@@ -432,14 +456,6 @@ public class Database {
 		}
 		
 		return ret;
-	}
-	
-	public void modify(){
-		
-	}
-	
-	public void delete(){
-		
 	}
 	
 	public static Connection getConnection(String url, String id, String pwd){
