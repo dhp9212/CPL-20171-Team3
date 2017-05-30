@@ -59,7 +59,7 @@ public class ModuleMain implements SerialPortEventListener {
     private int humi = 30;	//auto 값
     private float t1, t2, h = 0;
     private int motor = 0, light = 0, humid = 0; //0은 꺼짐, 1은 켜짐(가동중/ 작동중)
-    private int mtime = 10000;	//mtime : 모터를 사용할 시간(가동시간 : 10초 설정)
+    private int mtime = 3000;	//mtime : 모터를 사용할 시간(가동시간 : 10초 설정)
     
     // for chunk control
     private final int max_chunk = 10;
@@ -260,23 +260,6 @@ public class ModuleMain implements SerialPortEventListener {
                 		output.write(RELAY_HUMID_OFF.getBytes());
                 	}
                 }
-                if(MOTOFLAG == true){
-                	mCalendar= Calendar.getInstance(tz);
-                	int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
-                	
-                	//motor == 0 : 커튼이 닫혀있음
-                	//motor == 1 : 커튼이 열려있음
-                	if( motor == 0 && hour >= 7 && hour < 22){
-                		output.write(MOTOR_L.getBytes());
-                		motor = 1;
-                		mTimer();	//10초동안 가동후 정지
-                	}//open
-                	else if( motor == 1 && hour >= 22){
-                		output.write(MOTOR_R.getBytes());
-                		motor = 0;
-                		mTimer();	//10초동안 가동후 정지
-                	}//close
-                }
                 
                 
                 
@@ -296,30 +279,38 @@ public class ModuleMain implements SerialPortEventListener {
          		if(message.equals(RELAY_HUMID_ON) || message.equals(RELAY_HUMID_OFF))
          		{
          			HUMIFLAG = false;
+         			output.write(byteArray);
          		}else if(message.equals(RELAY_HUMID_AUTO))
          		{
          			HUMIFLAG = true;
+         			output.write(byteArray);
          		}
          		else if(message.equals(RELAY_HITTE_ON) || message.equals(RELAY_HITTE_OFF))
          		{
          			HITTFLAG = false;
+         			output.write(byteArray);
          		}
          		else if(message.equals(RELAY_HITTE_AUTO))
          		{
          			HITTFLAG = true;
+         			output.write(byteArray);
          		}
          		else if(message.equals(RELAY_LIGHT_ON) || message.equals(RELAY_LIGHT_OFF))
          		{
          			LIGHFLAG = false;
+         			output.write(byteArray);
          		}else if(message.equals(RELAY_LIGHT_AUTO))
          		{
          			LIGHFLAG = true;
+         			output.write(byteArray);
          		}else if(message.equals(MOTOR_L) || message.equals(MOTOR_R)){
+         			output.write(byteArray);
          			mTimer();
          			//10초후 가동이 중지되도록 설정해줌
          		}
-         		
-				output.write(byteArray);
+         		else{
+         			output.write(byteArray);
+         		}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
