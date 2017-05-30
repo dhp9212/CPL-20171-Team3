@@ -110,7 +110,7 @@ void control(String temp){
   }
   //가습기 제어
   else if(temp.equals(RELAY_HUMID_ON)){
-    igitalWrite(humid,LOW);
+    digitalWrite(humid,LOW);
   }else if(temp.equals(RELAY_HUMID_OFF)){
     digitalWrite(humid,HIGH);
   }
@@ -189,14 +189,14 @@ void printT2(lm35 t){
   Serial.flush();
 }
 
-//모터 제어
+//모터 제어(0~255)
 void rotationR(int m1, int m2){
-  analogWrite(m1,255);
+  analogWrite(m1,127);  //50%의속력
   analogWrite(m2,0);
 }
 void rotationL(int m1, int m2){
   analogWrite(m1,0);
-  analogWrite(m2,255);
+  analogWrite(m2,127);
 }
 void rotationStop(int m1, int m2){
    analogWrite(m1,0);
